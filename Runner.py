@@ -150,8 +150,8 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
     length_index = 40
     fileindex = 1
     picpoint = [lengths[length_index - 1], curves[length_index - 1, modeindex - 1]]
-    #thecurve3(curve, clas, fileddisplay, 1, 1, clasopt, xmin, xmax, ymin, ymax, [1],
-              #fileindex, modeindex, picpoint)
+    # thecurve3(curve, clas, fileddisplay, 1, 1, clasopt, xmin, xmax, ymin, ymax, [1],
+    # fileindex, modeindex, picpoint)
 
     # Return the important example results
     # The signature curve is simply a matter of plotting the
@@ -173,13 +173,13 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
         'Orig_coords': nodes_p,
         'Deformations': shapes,
         'Reference_Length': ReferenceLength,
-        'Section_Def':descp,
-        'Yield_stress':fy,
-        'Case':Case
+        'Section_Def': descp,
+        'Yield_stress': fy,
+        'Case': Case
     }
 
 
-def plot_Sign_Curve(Section):
+def plot_Sign_Curve(Section, plot: bool):
     # Inputs:
     sign_nodes = Section['nodes']
     thk = Section['thickness']
@@ -244,7 +244,8 @@ def plot_Sign_Curve(Section):
     ax2.axes.set_ylabel('length [in]')
     ax2.axes.set_title('Cross Section')
     # Show the plot
-    plt.show()
+    if plot:
+        plt.show()
     return minimas
 
 
@@ -273,8 +274,8 @@ def plot_Sign_Curve(Section):
 #           'Flx' for bending
 # MemLength : Total member length
 
-C1 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Axial', 150.0)
-C2 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 90, 50.0, 'Flx', 150.0)
+C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0, 55.0, 'Axial', 150.0)
+C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0, 55.0, 'Flx', 150.0)
 
-plot_Sign_Curve(C1)
-plot_Sign_Curve(C2)
+plot_Sign_Curve(C1, True)
+plot_Sign_Curve(C2, False)
