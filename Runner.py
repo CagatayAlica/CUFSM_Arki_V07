@@ -175,7 +175,8 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
         'Reference_Length': ReferenceLength,
         'Section_Def': descp,
         'Yield_stress': fy,
-        'Case': Case
+        'Case': Case,
+        'Sect_Props': properties
     }
 
 

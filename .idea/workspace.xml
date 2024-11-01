@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Some input explanations are added.">
+    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Plot function is separated for plot_sign_Curve.">
+      <change afterPath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Runner.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -119,12 +121,21 @@
       <option name="project" value="LOCAL" />
       <updated>1730463520450</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Plot function is separated for plot_sign_Curve.">
+      <option name="closed" value="true" />
+      <created>1730466993902</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1730466993902</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First commit" />
     <MESSAGE value="Some input explanations are added." />
-    <option name="LAST_COMMIT_MESSAGE" value="Some input explanations are added." />
+    <MESSAGE value="Plot function is separated for plot_sign_Curve." />
+    <option name="LAST_COMMIT_MESSAGE" value="Plot function is separated for plot_sign_Curve." />
   </component>
 </project>
