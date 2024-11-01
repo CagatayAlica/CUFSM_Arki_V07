@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Plot function is separated for plot_sign_Curve.">
-      <change afterPath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" afterDir="false" />
+    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="New branch">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Runner.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +20,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
@@ -38,7 +41,7 @@
     "Python.example_1.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "Development__01",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "H:/My Drive/Py/CUFSM_Arki_V07/Runner.py"
   }
@@ -129,13 +132,22 @@
       <option name="project" value="LOCAL" />
       <updated>1730466993902</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="New branch">
+      <option name="closed" value="true" />
+      <created>1730470423485</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1730470423485</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First commit" />
     <MESSAGE value="Some input explanations are added." />
     <MESSAGE value="Plot function is separated for plot_sign_Curve." />
-    <option name="LAST_COMMIT_MESSAGE" value="Plot function is separated for plot_sign_Curve." />
+    <MESSAGE value="New branch" />
+    <option name="LAST_COMMIT_MESSAGE" value="New branch" />
   </component>
 </project>
