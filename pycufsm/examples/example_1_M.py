@@ -1,5 +1,7 @@
 from typing import Dict
+
 import numpy as np
+
 from pycufsm.CUFSM_Functions.fsm import strip
 from pycufsm.CUFSM_Functions.preprocess import stress_gen
 from pycufsm.CUFSM_Functions.types import BC, GBT_Con, Sect_Props
@@ -7,26 +9,108 @@ from pycufsm.CUFSM_Functions.plotters import thecurve3
 import matplotlib.pyplot as plt
 from pycufsm.SectionProps.sectionDraw import ceeSection, lengthRange, grossProp
 
-
 # This example presents a very simple Cee section,
 # solved for pure compression,
 # in the Imperial unit system
+# ------------------------------------------------------------------------
+# Define units
+# ------------------------------------------------------------------------
+# Basic Units
+mm = 1.0
+N = 1.0
+sec = 1.0
+
+# Length
+m = mm * 1000.0
+cm = m / 100.0
+inch = 25.4 * mm
+ft = 12.0 * inch
+
+# Force
+kN = N * 1000.0
+kips = kN * 4.448221615
+lb = kips / 1.0e3
+
+# Stress (kN/m2 or kPa)
+Pa = N / (m ** 2)
+kPa = Pa * 1.0e3
+MPa = Pa * 1.0e6
+GPa = Pa * 1.0e9
+ksi = 6.8947573 * MPa
+psi = 1e-3 * ksi
+
+# Mass - Weight
+tonne = kN * sec ** 2 / m
+kg = N * sec ** 2 / m
+lbs = psi * inch ** 2
+
+# Gravitational acceleration
+g = 9.81 * m / sec ** 2
+
+# Time
+mins = 60 * sec
+hour = 60 * mins
+
+# -------------------------------------------------------------------------
+# Material information
+# ------------------------------------------------------------------------
+E = 29500
+v = 0.3
+fy = 55
+# ------------------------------------------------------------------------
+# Section dimensions
+# ------------------------------------------------------------------------
+A = 9.0
+B = 2.5
+C = 1.773
+t = 0.059
+
+isImperial = True
+if isImperial:
+    # -------------------------------------------------------------------------
+    # Material information
+    # ------------------------------------------------------------------------
+    E = E
+    v = v
+    fy = fy
+    # ------------------------------------------------------------------------
+    # Section dimensions
+    # ------------------------------------------------------------------------
+    A = A
+    B = B
+    C = C
+    t = t
+else:
+    # Set all values to Imperial
+    # -------------------------------------------------------------------------
+    # Material information
+    # ------------------------------------------------------------------------
+    E = E * ksi
+    v = v
+    fy = fy * ksi
+    # ------------------------------------------------------------------------
+    # Section dimensions
+    # ------------------------------------------------------------------------
+    A = A * inch
+    B = B * inch
+    C = C * inch
+    t = t * inch
 
 
-def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: float, Case: str,
-                  MemLength: float) -> Dict[str, np.ndarray]:
 
+
+
+def __main__() -> Dict[str, np.ndarray]:
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
-    props = np.array([np.array([0, 29500, 29500, 0.3, 0.3, 29500 / (2 * (1 + 0.3))])])
+
+    props = np.array([np.array([0, E, E, v, v, E / (2 * (1 + v))])])
 
     # Define a lightly-meshed Cee shape
     # (1 element per lip, 2 elements per flange, 3 elements on the web)
     # Nodal location units are inches
     # section = hatSection(4.724, 2.362, 2.953, 0.787, 0.079)
-    # section = ceeSection(5.905, 3.80, 0.630, 0.0393, 0)
-    section = ceeSection(A, B, C, t, angle)
-    fy = Fyield  # ksi
-    nodes = section[0]
+    section = ceeSection(A, B, C, t)
+    nodes = section[0]['0']
     elements = section[1]
     thickness = section[2]
     properties = grossProp(nodes[:, 1], nodes[:, 2], thickness, thickness)
@@ -34,9 +118,13 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
     # These lengths will generally provide sufficient accuracy for
     # local, distortional, and global buckling modes
     # Length units are inches
-    ReferenceLength = MemLength  # inches
+    unit = ''
+    if isImperial:
+        unit = "imperial"
+    else:
+        unit = "metric"
 
-    lengths = lengthRange(ReferenceLength, "imperial")
+    lengths = lengthRange(unit)
     flag = np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     # No special springs or constraints
     springs = np.array([])
@@ -85,34 +173,19 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
     }
 
     # Generate the stress points assuming 50 ksi yield and pure compression
-    if Case == 'Axial':
-        nodes_p = stress_gen(
-            nodes=nodes,
-            forces={
-                'P': fy * sect_props['A'],
-                'Mxx': 0,  # fy * sect_props['Ixx'] / sect_props['cy'],
-                'Myy': 0,
-                'M11': 0,
-                'M22': 0,
-                'restrain': False,
-                'offset': [-thickness / 2, -thickness / 2]
-            },
-            sect_props=sect_props,
-        )
-    else:
-        nodes_p = stress_gen(
-            nodes=nodes,
-            forces={
-                'P': 0,  # fy * sect_props['A'],
-                'Mxx': fy * sect_props['Ixx'] / sect_props['cy'],
-                'Myy': 0,
-                'M11': 0,
-                'M22': 0,
-                'restrain': False,
-                'offset': [-thickness / 2, -thickness / 2]
-            },
-            sect_props=sect_props,
-        )
+    nodes_p = stress_gen(
+        nodes=nodes,
+        forces={
+            'P': 0,
+            'Mxx': fy * sect_props['Ixx'] / sect_props['cy'],
+            'Myy': 0,
+            'M11': 0,
+            'M22': 0,
+            'restrain': False,
+            'offset': [-thickness / 2, -thickness / 2]
+        },
+        sect_props=sect_props,
+    )
 
     # Perform the Finite Strip Method analysis
     signature, curve, shapes = strip(
@@ -171,65 +244,65 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
         'Y_values': signature,
         'Y_values_allmodes': curve,
         'Orig_coords': nodes_p,
-        'Deformations': shapes,
-        'Reference_Length': ReferenceLength
+        'Deformations': shapes
     }
 
 
-def plot_Sign_Curve(Section):
-    # Inputs:
-    sign_nodes = Section['nodes']
-    thk = Section['thickness']
-    X_Values = Section['X_values']
-    Y_Values = Section['Y_values']
-    RefLen = Section['Reference_Length']
-
-    lengths = lengthRange(RefLen, "imperial")
+if __name__ == '__main__':
+    signa = __main__()
+    lengths = lengthRange("imperial")
     # Plotting
-    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
     minimas = []
     fig.suptitle('Signature Curve')
-    # Finding the minima points
-    for loadFactor in range(2, len(Y_Values)):
-        if Y_Values[loadFactor - 1] < Y_Values[loadFactor - 2] and Y_Values[
-            loadFactor - 1] < \
-                Y_Values[loadFactor]:
-            text = f"P/Py: {Y_Values[loadFactor - 1]:.3f} \nL: {X_Values[loadFactor - 1]}"
-            minimas.append([X_Values[loadFactor - 1], Y_Values[loadFactor - 1]])
-            # Annotating the minima values
-            ax1.annotate(text, xy=(X_Values[loadFactor - 1], Y_Values[loadFactor - 1]),
-                         xytext=(X_Values[loadFactor - 1] * 0.3, Y_Values[loadFactor - 1] * 0.3),
-                         arrowprops=dict(facecolor='black', shrink=0.05, headwidth=4, width=1), fontsize=8)
+    for i in range(2, len(signa['Y_values'])):
+        slope = (signa['Y_values'][i - 1] - signa['Y_values'][i - 2]) / (
+                signa['X_values'][i - 1] - signa['X_values'][i - 2])
+        # with open("shapes.txt", mode='a') as file:
+        # file.write(f"\nLength: {signa['X_values'][i]} ==> slope: {slope:.7f}")
 
-    # Find the index of the item
-    h_index = np.where(lengths == RefLen)[0]
-    h_value = Y_Values[h_index][0]
-    h_text = f'P/Py: {h_value:.3f}\nL: {RefLen}'
-    minimas.append([RefLen, h_value])
-    # Annotating the minima values
-    ax1.annotate(h_text, xy=(RefLen, h_value),
-                 xytext=(RefLen * 0.3, h_value * 0.3),
-                 arrowprops=dict(facecolor='black', shrink=0.05, headwidth=4, width=1), fontsize=8)
+    # Finding the minima points
+    for loadFactor in range(2, len(signa['Y_values'])):
+        if signa['Y_values'][loadFactor - 1] < signa['Y_values'][loadFactor - 2] and signa['Y_values'][loadFactor - 1] < \
+                signa['Y_values'][loadFactor]:
+            text = f"P/Py: {signa['Y_values'][loadFactor - 1]:.3f} \nL: {signa['X_values'][loadFactor - 1]}"
+            minimas.append([signa['X_values'][loadFactor - 1], signa['Y_values'][loadFactor - 1]])
+            print(f"Minima of the curve = {signa['Y_values'][loadFactor - 1]:.3f}")
+            print(signa['Y_values'])
+            print(signa['X_values'])
+
+            with open("shapes.txt", mode='w') as file:
+                file.write(str(signa['curve']))
+            l_index = loadFactor
+
+            # Annotating the minima values
+            ax1.annotate(text, xy=(signa['X_values'][loadFactor - 1], signa['Y_values'][loadFactor - 1]),
+                         xytext=(signa['X_values'][loadFactor - 1] * 0.3, signa['Y_values'][loadFactor - 1] * 0.3),
+                         arrowprops=dict(facecolor='black', shrink=0.05, headwidth=4, width=1), fontsize=8)
     # Setting the plot for the signature curve.
-    ax1.plot(X_Values, Y_Values, linewidth=2.0)
-    # print(signa['curve'][:, 1][:, 1])
+    ax1.plot(signa['X_values'], signa['Y_values'], linewidth=2.0)
+    ax3.plot(signa['X_values'], signa['curve'][:, 1][:, 1], linewidth=2.0)
+    print(signa['curve'][:, 1][:, 1])
     print(minimas)
     # Formatting the signature curve plot.
-    ax1.axis(ymin=0.0, ymax=np.min([np.max(Y_Values), 3 * np.median(Y_Values)]))
+    ax1.axis(ymin=0.0, ymax=np.min([np.max(signa['Y_values']), 3 * np.median(signa['Y_values'])]))
     ax1.grid(color='b', linestyle='-', linewidth=0.2)
     ax1.axes.set_xscale("log")
+    ax3.axes.set_xscale("log")
     ax1.axes.set_xlabel('length')
     ax1.axes.set_ylabel('load factor [P/Py]')
     ax1.axes.set_title('Buckling curve')
+
     # Drawing the cross section shape
     # IDs of the nodes.
-    id_nodes = sign_nodes[:, 0]
+    id_nodes = signa['nodes'][:, 0]
     # X values of the nodes.
-    x_nodes = sign_nodes[:, 1]
+    x_nodes = signa['nodes'][:, 1]
     # Y values of the nodes.
-    y_nodes = sign_nodes[:, 2]
+    y_nodes = signa['nodes'][:, 2]
     # Thickness
-    thk = thk
+    thk = signa['thickness']
+
     for i in range(len(x_nodes)):
         ax2.axes.annotate(id_nodes[i], xy=(x_nodes[i] * 1.03, y_nodes[i]), xycoords='data', fontsize=8)
     ax2.plot(x_nodes, y_nodes, linewidth=thk * 10, color='green', marker="o", markersize=2)
@@ -239,35 +312,3 @@ def plot_Sign_Curve(Section):
     ax2.axes.set_title('Cross Section')
     # Show the plot
     plt.show()
-    return minimas
-
-# C_sign_solver(A, B, C, t, angle, Fyield, Case, MemLength)
-# Units [in, ksi]
-# A : Web height
-# B : Flange width
-# C : Lip length
-# t : Steel thickness
-# angle : Orientation of the section
-#                 "0": """
-#                        ┌-┐
-#                        |
-#                        └-┘
-#                        """,
-#                "270": """
-#                        ┌   ┐
-#                        └---┘
-#                        """,
-#                "90": """
-#                        ┌---┐
-#                        └   ┘
-#                        """
-# Fyield : Steel yield stress
-# Case : 'Axial' for uniform axial compression
-#           'Flx' for bending
-# MemLength : Total member length
-
-C1 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Axial', 150.0)
-C2 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Flx', 150.0)
-
-plot_Sign_Curve(C1)
-plot_Sign_Curve(C2)

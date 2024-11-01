@@ -13,7 +13,13 @@ from pycufsm.SectionProps.sectionDraw import ceeSection, lengthRange, grossProp
 # in the Imperial unit system
 
 
-def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: float, Case: str,
+def C_sign_solver(A: float,
+                  B: float,
+                  C: float,
+                  t: float,
+                  angle: float,
+                  Fyield: float,
+                  Case: str,
                   MemLength: float) -> Dict[str, np.ndarray]:
 
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
@@ -241,33 +247,8 @@ def plot_Sign_Curve(Section):
     plt.show()
     return minimas
 
-# C_sign_solver(A, B, C, t, angle, Fyield, Case, MemLength)
-# Units [in, ksi]
-# A : Web height
-# B : Flange width
-# C : Lip length
-# t : Steel thickness
-# angle : Orientation of the section
-#                 "0": """
-#                        ┌-┐
-#                        |
-#                        └-┘
-#                        """,
-#                "270": """
-#                        ┌   ┐
-#                        └---┘
-#                        """,
-#                "90": """
-#                        ┌---┐
-#                        └   ┘
-#                        """
-# Fyield : Steel yield stress
-# Case : 'Axial' for uniform axial compression
-#           'Flx' for bending
-# MemLength : Total member length
 
 C1 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Axial', 150.0)
 C2 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Flx', 150.0)
 
 plot_Sign_Curve(C1)
-plot_Sign_Curve(C2)
