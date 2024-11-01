@@ -15,7 +15,6 @@ from pycufsm.SectionProps.sectionDraw import ceeSection, lengthRange, grossProp
 
 def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: float, Case: str,
                   MemLength: float) -> Dict[str, np.ndarray]:
-
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
     props = np.array([np.array([0, 29500, 29500, 0.3, 0.3, 29500 / (2 * (1 + 0.3))])])
 
@@ -29,6 +28,7 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
     nodes = section[0]
     elements = section[1]
     thickness = section[2]
+    descp = section[3]
     properties = grossProp(nodes[:, 1], nodes[:, 2], thickness, thickness)
 
     # These lengths will generally provide sufficient accuracy for
@@ -150,8 +150,8 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
     length_index = 40
     fileindex = 1
     picpoint = [lengths[length_index - 1], curves[length_index - 1, modeindex - 1]]
-    thecurve3(curve, clas, fileddisplay, 1, 1, clasopt, xmin, xmax, ymin, ymax, [1],
-              fileindex, modeindex, picpoint)
+    #thecurve3(curve, clas, fileddisplay, 1, 1, clasopt, xmin, xmax, ymin, ymax, [1],
+              #fileindex, modeindex, picpoint)
 
     # Return the important example results
     # The signature curve is simply a matter of plotting the
@@ -172,7 +172,10 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
         'Y_values_allmodes': curve,
         'Orig_coords': nodes_p,
         'Deformations': shapes,
-        'Reference_Length': ReferenceLength
+        'Reference_Length': ReferenceLength,
+        'Section_Def':descp,
+        'Yield_stress':fy,
+        'Case':Case
     }
 
 
@@ -183,12 +186,15 @@ def plot_Sign_Curve(Section):
     X_Values = Section['X_values']
     Y_Values = Section['Y_values']
     RefLen = Section['Reference_Length']
+    descp = Section['Section_Def']
+    fy = Section['Yield_stress']
+    case = Section['Case']
 
     lengths = lengthRange(RefLen, "imperial")
     # Plotting
     fig, (ax1, ax2) = plt.subplots(1, 2)
     minimas = []
-    fig.suptitle('Signature Curve')
+    fig.suptitle(f'Signature Curve, {case}\n{descp}, {fy:.2f} ksi')
     # Finding the minima points
     for loadFactor in range(2, len(Y_Values)):
         if Y_Values[loadFactor - 1] < Y_Values[loadFactor - 2] and Y_Values[
@@ -218,7 +224,7 @@ def plot_Sign_Curve(Section):
     ax1.axis(ymin=0.0, ymax=np.min([np.max(Y_Values), 3 * np.median(Y_Values)]))
     ax1.grid(color='b', linestyle='-', linewidth=0.2)
     ax1.axes.set_xscale("log")
-    ax1.axes.set_xlabel('length')
+    ax1.axes.set_xlabel('length [in]')
     ax1.axes.set_ylabel('load factor [P/Py]')
     ax1.axes.set_title('Buckling curve')
     # Drawing the cross section shape
@@ -231,15 +237,16 @@ def plot_Sign_Curve(Section):
     # Thickness
     thk = thk
     for i in range(len(x_nodes)):
-        ax2.axes.annotate(id_nodes[i], xy=(x_nodes[i] * 1.03, y_nodes[i]), xycoords='data', fontsize=8)
-    ax2.plot(x_nodes, y_nodes, linewidth=thk * 10, color='green', marker="o", markersize=2)
+        ax2.axes.annotate(f'{id_nodes[i] + 1:.0f}', xy=(x_nodes[i] * 1.03, y_nodes[i]), xycoords='data', fontsize=8)
+    ax2.plot(x_nodes, y_nodes, linewidth=thk * 30, color='green', marker="o", markersize=2)
     ax2.axis('equal')
-    ax2.axes.set_xlabel('length')
-    ax2.axes.set_ylabel('length')
+    ax2.axes.set_xlabel('length [in]')
+    ax2.axes.set_ylabel('length [in]')
     ax2.axes.set_title('Cross Section')
     # Show the plot
     plt.show()
     return minimas
+
 
 # C_sign_solver(A, B, C, t, angle, Fyield, Case, MemLength)
 # Units [in, ksi]
@@ -267,7 +274,7 @@ def plot_Sign_Curve(Section):
 # MemLength : Total member length
 
 C1 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Axial', 150.0)
-C2 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Flx', 150.0)
+C2 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 90, 50.0, 'Flx', 150.0)
 
 plot_Sign_Curve(C1)
 plot_Sign_Curve(C2)

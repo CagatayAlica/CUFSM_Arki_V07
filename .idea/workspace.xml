@@ -4,18 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/CUFSM_Arki_V07.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Runner.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pycufsm/SectionProps/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pycufsm/examples/__init__.py" afterDir="false" />
+    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Some input explanations are added.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Runner.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,6 +118,28 @@
       <option name="presentableId" value="Default" />
       <updated>1730444446190</updated>
     </task>
+    <task id="LOCAL-00001" summary="First commit">
+      <option name="closed" value="true" />
+      <created>1730453492119</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1730453492119</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Some input explanations are added.">
+      <option name="closed" value="true" />
+      <created>1730454028781</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1730454028781</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="First commit" />
+    <MESSAGE value="Some input explanations are added." />
+    <option name="LAST_COMMIT_MESSAGE" value="Some input explanations are added." />
   </component>
 </project>

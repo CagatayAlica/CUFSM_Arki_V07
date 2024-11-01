@@ -162,7 +162,7 @@ def crossect(
     plt.gca().set_aspect('equal', adjustable='box')
     plt.axis('off')
     # plt.savefig('Validation/'+address+'/CS.png')
-    plt.show()
+    # plt.show()
 
 
 def dispshap(
@@ -337,7 +337,7 @@ def dispshap(
     #     plt.savefig('Validation/'+address+'/global.png')
     # if(figure == 4):
     #     plt.savefig('Validation/'+address+'/global1.png')
-    # plt.show()
+    #plt.show()
 
 
 def thecurve3(
@@ -413,5 +413,5 @@ def thecurve3(
     plt.xlabel('length')
     plt.ylabel('load factor')
     plt.title('Buckling curve')
-    plt.show()
+    #plt.show()
     #set the callback of curve

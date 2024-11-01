@@ -3,7 +3,7 @@ import numpy as np
 from pycufsm.CUFSM_Functions.fsm import strip
 from pycufsm.CUFSM_Functions.preprocess import stress_gen
 from pycufsm.CUFSM_Functions.types import BC, GBT_Con, Sect_Props
-from pycufsm.CUFSM_Functions.plotters import thecurve3
+from pycufsm.CUFSM_Functions.plotters import thecurve3, dispshap
 import matplotlib.pyplot as plt
 from pycufsm.SectionProps.sectionDraw import ceeSection, lengthRange, grossProp
 
@@ -21,7 +21,6 @@ def C_sign_solver(A: float,
                   Fyield: float,
                   Case: str,
                   MemLength: float) -> Dict[str, np.ndarray]:
-
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
     props = np.array([np.array([0, 29500, 29500, 0.3, 0.3, 29500 / (2 * (1 + 0.3))])])
 
@@ -156,8 +155,9 @@ def C_sign_solver(A: float,
     length_index = 40
     fileindex = 1
     picpoint = [lengths[length_index - 1], curves[length_index - 1, modeindex - 1]]
-    thecurve3(curve, clas, fileddisplay, 1, 1, clasopt, xmin, xmax, ymin, ymax, [1],
-              fileindex, modeindex, picpoint)
+    #thecurve3(curve, clas, fileddisplay, 1, 1, clasopt, xmin, xmax, ymin, ymax, [1],
+              #fileindex, modeindex, picpoint)
+    #dispshap(15, nodes_p, elements, shapes, 5, springs, m_all, b_c, 5)
 
     # Return the important example results
     # The signature curve is simply a matter of plotting the
@@ -249,6 +249,8 @@ def plot_Sign_Curve(Section):
 
 
 C1 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Axial', 150.0)
-C2 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Flx', 150.0)
+# C2 = C_sign_solver(5.905, 3.80, 0.630, 0.0393, 0, 50.0, 'Flx', 150.0)
 
 plot_Sign_Curve(C1)
+
+
