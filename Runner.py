@@ -277,8 +277,8 @@ def plot_Sign_Curve(Section, plot: bool):
 #           'Flx' for bending
 # MemLength : Total member length
 
-C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Axial', 150.0)
-C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Flx', 150.0)
+C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Axial', 150.0)
+C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Flx', 150.0)
 
-plot_Sign_Curve(C1, False)
+plot_Sign_Curve(C1, True)
 plot_Sign_Curve(C2, True)
