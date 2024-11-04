@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="New branch">
+      <change afterPath="$PROJECT_DIR$/EnterGate.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Runner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pycufsm/SectionProps/sectionDraw.py" beforeDir="false" afterPath="$PROJECT_DIR$/pycufsm/SectionProps/sectionDraw.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +25,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="Development_01" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -41,7 +44,7 @@
     "Python.example_1.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Development__01",
+    "git-widget-placeholder": "Development__02",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "H:/My Drive/Py/CUFSM_Arki_V07/Runner.py"
   }
@@ -140,7 +143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730470423485</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="New branch">
+      <option name="closed" value="true" />
+      <created>1730471940852</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1730471940852</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -149,5 +160,23 @@
     <MESSAGE value="Plot function is separated for plot_sign_Curve." />
     <MESSAGE value="New branch" />
     <option name="LAST_COMMIT_MESSAGE" value="New branch" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/pycufsm/CUFSM_Functions/analysis_p.py</url>
+          <line>68</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

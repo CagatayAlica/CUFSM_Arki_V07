@@ -13,7 +13,7 @@ from pycufsm.SectionProps.sectionDraw import ceeSection, lengthRange, grossProp
 # in the Imperial unit system
 
 
-def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: float, Case: str,
+def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float, Fyield: float, Case: str,
                   MemLength: float) -> Dict[str, np.ndarray]:
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
     props = np.array([np.array([0, 29500, 29500, 0.3, 0.3, 29500 / (2 * (1 + 0.3))])])
@@ -23,10 +23,12 @@ def C_sign_solver(A: float, B: float, C: float, t: float, angle: float, Fyield: 
     # Nodal location units are inches
     # section = hatSection(4.724, 2.362, 2.953, 0.787, 0.079)
     # section = ceeSection(5.905, 3.80, 0.630, 0.0393, 0)
-    section = ceeSection(A, B, C, t, angle)
+    section = ceeSection(A, B, C, t, R, angle)
     fy = Fyield  # ksi
     nodes = section[0]
+    print(f'Cal_nodes :\n{nodes}')
     elements = section[1]
+    print(f'Cal_elements :\n{elements}')
     thickness = section[2]
     descp = section[3]
     properties = grossProp(nodes[:, 1], nodes[:, 2], thickness, thickness)
@@ -275,8 +277,8 @@ def plot_Sign_Curve(Section, plot: bool):
 #           'Flx' for bending
 # MemLength : Total member length
 
-C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0, 55.0, 'Axial', 150.0)
-C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0, 55.0, 'Flx', 150.0)
+C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Axial', 150.0)
+C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Flx', 150.0)
 
-plot_Sign_Curve(C1, True)
-plot_Sign_Curve(C2, False)
+plot_Sign_Curve(C1, False)
+plot_Sign_Curve(C2, True)
