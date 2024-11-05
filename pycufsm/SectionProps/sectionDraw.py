@@ -236,7 +236,6 @@ def ceeSection(A, B, C, t, R, angle):
     thickness = t
     # Shape of the node matrix
     num_cols, num_rows = Csection.shape
-    print(f'Shape of the nodes : {num_cols}x{num_rows}')
     elements = np.empty([num_rows - 1, 5])
     for i in range(num_rows-1):
         elements[i, 0] = i
@@ -245,7 +244,12 @@ def ceeSection(A, B, C, t, R, angle):
         elements[i, 3] = thickness
         elements[i, 4] = 0
 
-    descp = "Section : A:" + str(A) + " B:" + str(B) + " C:" + str(C) + " t:" + str(t)
+    descp = (f'Section :C {A:.3f} x {B:.3f} x {C:.3f} - {t:.3f}\n'
+             f'   A:{A:.3f} in, Web height\n'
+             f'   B:{B:.3f} in, Flange width\n'
+             f'   C:{C:.3f} in, Lip length\n'
+             f'   R:{R:.3f} in, Inner radius\n'
+             f'   t:{t:.3f} in, Thickness')
     return nodes, elements, thickness, descp
 
 

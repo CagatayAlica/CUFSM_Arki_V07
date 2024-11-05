@@ -6,6 +6,8 @@ from pycufsm.CUFSM_Functions.types import BC, GBT_Con, Sect_Props
 from pycufsm.CUFSM_Functions.plotters import thecurve3
 import matplotlib.pyplot as plt
 from pycufsm.SectionProps.sectionDraw import ceeSection, lengthRange, grossProp
+import pandas as pd
+import Constants.Constants as cons
 
 
 # This example presents a very simple Cee section,
@@ -26,9 +28,9 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
     section = ceeSection(A, B, C, t, R, angle)
     fy = Fyield  # ksi
     nodes = section[0]
-    print(f'Cal_nodes :\n{nodes}')
+    # print(f'Cal_nodes :\n{nodes}')
     elements = section[1]
-    print(f'Cal_elements :\n{elements}')
+    # print(f'Cal_elements :\n{elements}')
     thickness = section[2]
     descp = section[3]
     properties = grossProp(nodes[:, 1], nodes[:, 2], thickness, thickness)
@@ -64,7 +66,7 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
 
     # Solve for 10 eigenvalues
     n_eigs = 10
-    print(f"gross: {properties[0]}")
+    # print(f"gross: {properties[0]}")
     # Set the section properties for this simple section
     # Normally, these might be calculated by an external package
     sect_props: Sect_Props = {
@@ -168,6 +170,7 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
         'elements': elements,
         'flag': flag,
         'springs': springs,
+        'BC': b_c,
         'constraints': constraints,
         'X_values': lengths,
         'Y_values': signature,
@@ -178,6 +181,7 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
         'Section_Def': descp,
         'Yield_stress': fy,
         'Case': Case,
+        'Angle': angle,
         'Sect_Props': properties
     }
 
@@ -192,12 +196,13 @@ def plot_Sign_Curve(Section, plot: bool):
     descp = Section['Section_Def']
     fy = Section['Yield_stress']
     case = Section['Case']
+    angle = Section['Angle']
 
     lengths = lengthRange(RefLen, "imperial")
     # Plotting
     fig, (ax1, ax2) = plt.subplots(1, 2)
     minimas = []
-    fig.suptitle(f'Signature Curve, {case}\n{descp}, {fy:.2f} ksi')
+    fig.suptitle(f'Signature Curve, {case}\nfy: {fy:.2f} ksi')
     # Finding the minima points
     for loadFactor in range(2, len(Y_Values)):
         if Y_Values[loadFactor - 1] < Y_Values[loadFactor - 2] and Y_Values[
@@ -222,7 +227,7 @@ def plot_Sign_Curve(Section, plot: bool):
     # Setting the plot for the signature curve.
     ax1.plot(X_Values, Y_Values, linewidth=2.0)
     # print(signa['curve'][:, 1][:, 1])
-    print(minimas)
+    # print(minimas)
     # Formatting the signature curve plot.
     ax1.axis(ymin=0.0, ymax=np.min([np.max(Y_Values), 3 * np.median(Y_Values)]))
     ax1.grid(color='b', linestyle='-', linewidth=0.2)
@@ -243,6 +248,22 @@ def plot_Sign_Curve(Section, plot: bool):
         ax2.axes.annotate(f'{id_nodes[i] + 1:.0f}', xy=(x_nodes[i] * 1.03, y_nodes[i]), xycoords='data', fontsize=8)
     ax2.plot(x_nodes, y_nodes, linewidth=thk * 30, color='green', marker="o", markersize=2)
     ax2.axis('equal')
+    if angle == 0:
+        midX = (min(x_nodes) + max(x_nodes)) / 2.0
+        midY = (min(y_nodes) + max(y_nodes)) / 2.0
+        ax2.text(1.01*midX, midY, descp, ha='left', rotation=0, wrap=True,
+                 bbox={'facecolor': 'red', 'alpha': 0.5, 'pad': 10})
+    elif angle == 90:
+        midX = (min(x_nodes) + max(x_nodes)) / 2.0
+        midY = (min(y_nodes) + max(y_nodes)) / 2.0
+        ax2.text(midX, -1.05*midY, descp, ha='center', rotation=0, wrap=True,
+                 bbox={'facecolor': 'red', 'alpha': 0.5, 'pad': 10})
+    else:
+        midX = (min(x_nodes) + max(x_nodes)) / 2.0
+        midY = (min(y_nodes) + max(y_nodes)) / 2.0
+        ax2.text(midX, 1.05 * midY, descp, ha='center', rotation=0, wrap=True,
+                 bbox={'facecolor': 'red', 'alpha': 0.5, 'pad': 10})
+
     ax2.axes.set_xlabel('length [in]')
     ax2.axes.set_ylabel('length [in]')
     ax2.axes.set_title('Cross Section')
@@ -254,11 +275,12 @@ def plot_Sign_Curve(Section, plot: bool):
 
 # C_sign_solver(A, B, C, t, angle, Fyield, Case, MemLength)
 # Units [in, ksi]
-# A : Web height
-# B : Flange width
-# C : Lip length
-# t : Steel thickness
-# angle : Orientation of the section
+# A : Web height.
+# B : Flange width.
+# C : Lip length.
+# t : Steel thickness.
+# R : Inner radius.
+# angle : Orientation of the section.
 #                 "0": """
 #                        ┌-┐
 #                        |
@@ -272,13 +294,92 @@ def plot_Sign_Curve(Section, plot: bool):
 #                        ┌---┐
 #                        └   ┘
 #                        """
-# Fyield : Steel yield stress
-# Case : 'Axial' for uniform axial compression
-#           'Flx' for bending
+# Fyield : Steel yield stress.
+# Case : 'Axial' for uniform axial compression.
+#           'Flx' for bending creating compression at top fiber.
 # MemLength : Total member length
 
-C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Axial', 150.0)
-C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Flx', 150.0)
+def export_report(Section, minimas):
+    # Inputs:
+    nodes = Section['nodes']
+    elements = Section['elements']
+    Boundary = Section['BC']
+    RefLen = Section['Reference_Length']
+    descp = Section['Section_Def']
+    fy = Section['Yield_stress']
+    case = Section['Case']
+    lengthsData = lengthRange(RefLen, "imperial")
+    GrossData = Section['Sect_Props'][0]
+    angle = Section['Angle']
 
-plot_Sign_Curve(C1, True)
-plot_Sign_Curve(C2, True)
+    ang0 = (f'      ┌-┐\n'
+            f'        |\n'
+            f'      └-┘\n')
+    ang270 = (f'   ┌   ┐\n'
+              f'   └---┘\n')
+    ang90 = (f'  ┌---┐\n'
+             f'  └   ┘\n')
+
+    # Select shape
+    if angle == 0:
+        shape = ang0
+    elif angle == 90:
+        shape = ang90
+    else:
+        shape = ang270
+
+    # Create a dataframe for nodes
+    dfNodes = []
+    for i in nodes:
+        dfNodes.append([i[0] + 1, i[1], i[2]])
+    Nodes = pd.DataFrame(dfNodes, columns=['Node', 'X', 'Y'])
+
+    # Create a dataframe for elements
+    dfElements = []
+    for i in elements:
+        dfElements.append([i[0] + 1, i[1], i[2], i[3]])
+    Elements = pd.DataFrame(dfElements, columns=['Element', 'iNode', 'jNode', 'Thickness'])
+
+    # Gross section properties
+    dfGross = []
+    for key, value in GrossData.items():
+        dfGross.append([key, value])
+    Gross = pd.DataFrame(dfGross, columns=['Type', 'Value / Unit'])
+
+    # DataFrame for halfwave lengths
+    Lengths = pd.DataFrame(lengthsData, columns=['Length [in]'])
+
+    # Create a dataframe for critical buckling length
+    dfMinima = []
+    for i in minimas:
+        dfMinima.append([i[0], i[1]])
+    Minima = pd.DataFrame(dfMinima, columns=['Critical Length [in]', 'P/Py'])
+
+    # ==== CREATE A REPORT ====
+    Rep = (
+        f'{cons.secDivider}\n CALCULATION OF CRITICAL BUCKLING LOAD\n         USING SIGNATURE CURVE\n{cons.secDivider}\n'
+        f'{descp}\n'
+        f'Steel yield stress:\n{cons.sp3}Fy: {fy:.3f} ksi\n'
+        f'Member length:\n{cons.sp3}L: {RefLen:.3f} in\n'
+        f'Orientation:\n'
+        f'{cons.sp3}Angle: {angle}\n{shape}'
+        f'Check case:\n'
+        f'{cons.sp3}Case: {case}\n'
+        f'Boundary Condition:\n'
+        f'{cons.sp3}Boundary: {Boundary}\n'
+        f'Sectional nodes for center line:\n{Nodes}\n'
+        f'Sectional elements:\n{Elements}\n'
+        f'Gross section properties:\n{Gross}\n'
+        f'Reference lengths:\n'
+        f'{Lengths}\n'
+        f' ==== \nCritical load ratios:\n'
+        f'{Minima}\n ==== \n')
+    print(Rep)
+
+
+C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 90, 55.0, 'Axial', 150.0)
+# C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Flx', 150.0)
+
+pC1 = plot_Sign_Curve(C1, True)
+
+export_report(C1, pC1)
