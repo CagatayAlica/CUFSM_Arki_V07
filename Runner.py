@@ -251,12 +251,12 @@ def plot_Sign_Curve(Section, plot: bool):
     if angle == 0:
         midX = (min(x_nodes) + max(x_nodes)) / 2.0
         midY = (min(y_nodes) + max(y_nodes)) / 2.0
-        ax2.text(1.01*midX, midY, descp, ha='left', rotation=0, wrap=True,
+        ax2.text(1.01 * midX, midY, descp, ha='left', rotation=0, wrap=True,
                  bbox={'facecolor': 'red', 'alpha': 0.5, 'pad': 10})
     elif angle == 90:
         midX = (min(x_nodes) + max(x_nodes)) / 2.0
         midY = (min(y_nodes) + max(y_nodes)) / 2.0
-        ax2.text(midX, -1.05*midY, descp, ha='center', rotation=0, wrap=True,
+        ax2.text(midX, -1.05 * midY, descp, ha='center', rotation=0, wrap=True,
                  bbox={'facecolor': 'red', 'alpha': 0.5, 'pad': 10})
     else:
         midX = (min(x_nodes) + max(x_nodes)) / 2.0
@@ -272,32 +272,6 @@ def plot_Sign_Curve(Section, plot: bool):
         plt.show()
     return minimas
 
-
-# C_sign_solver(A, B, C, t, angle, Fyield, Case, MemLength)
-# Units [in, ksi]
-# A : Web height.
-# B : Flange width.
-# C : Lip length.
-# t : Steel thickness.
-# R : Inner radius.
-# angle : Orientation of the section.
-#                 "0": """
-#                        ┌-┐
-#                        |
-#                        └-┘
-#                        """,
-#                "270": """
-#                        ┌   ┐
-#                        └---┘
-#                        """,
-#                "90": """
-#                        ┌---┐
-#                        └   ┘
-#                        """
-# Fyield : Steel yield stress.
-# Case : 'Axial' for uniform axial compression.
-#           'Flx' for bending creating compression at top fiber.
-# MemLength : Total member length
 
 def export_report(Section, minimas):
     # Inputs:
@@ -377,7 +351,33 @@ def export_report(Section, minimas):
     print(Rep)
 
 
-C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 90, 55.0, 'Axial', 150.0)
+# C_sign_solver(A, B, C, t, angle, Fyield, Case, MemLength)
+# Units [in, ksi]
+# A : Web height.
+# B : Flange width.
+# C : Lip length.
+# t : Steel thickness.
+# R : Inner radius.
+# angle : Orientation of the section.
+#                 "0": """
+#                        ┌-┐
+#                        |
+#                        └-┘
+#                        """,
+#                "270": """
+#                        ┌   ┐
+#                        └---┘
+#                        """,
+#                "90": """
+#                        ┌---┐
+#                        └   ┘
+#                        """
+# Fyield : Steel yield stress.
+# Case : 'Axial' for uniform axial compression.
+#           'Flx' for bending creating compression at top fiber.
+# MemLength : Total member length
+
+C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Flx', 150.0)
 # C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Flx', 150.0)
 
 pC1 = plot_Sign_Curve(C1, True)
