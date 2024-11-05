@@ -20,11 +20,7 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
     props = np.array([np.array([0, 29500, 29500, 0.3, 0.3, 29500 / (2 * (1 + 0.3))])])
 
-    # Define a lightly-meshed Cee shape
-    # (1 element per lip, 2 elements per flange, 3 elements on the web)
-    # Nodal location units are inches
-    # section = hatSection(4.724, 2.362, 2.953, 0.787, 0.079)
-    # section = ceeSection(5.905, 3.80, 0.630, 0.0393, 0)
+    # Define a shape
     section = ceeSection(A, B, C, t, R, angle)
     fy = Fyield  # ksi
     nodes = section[0]
