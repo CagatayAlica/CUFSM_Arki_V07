@@ -10,25 +10,26 @@ import pandas as pd
 import Constants.Constants as cons
 
 
-# This example presents a very simple Cee section,
-# solved for pure compression,
-# in the Imperial unit system
-
-
+# ======================================================================================================================
+# PERFORM THE FINITE STRIP ANALYSIS
+# ======================================================================================================================
 def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float, Fyield: float, Case: str,
                   MemLength: float) -> Dict[str, np.ndarray]:
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
     props = np.array([np.array([0, 29500, 29500, 0.3, 0.3, 29500 / (2 * (1 + 0.3))])])
-
+    # Steel yield stress
+    fy = Fyield  # ksi
     # Define a shape
     section = ceeSection(A, B, C, t, R, angle)
-    fy = Fyield  # ksi
+    # Nodes IDs for strips
     nodes = section[0]
-    # print(f'Cal_nodes :\n{nodes}')
+    # Elements IDs for strips
     elements = section[1]
-    # print(f'Cal_elements :\n{elements}')
+    # Steel thickness
     thickness = section[2]
+    # Section name
     descp = section[3]
+    # Calculation the gross section properties
     properties = grossProp(nodes[:, 1], nodes[:, 2], thickness, thickness)
 
     # These lengths will generally provide sufficient accuracy for
@@ -61,7 +62,7 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
     m_all = np.ones((len(lengths), 1))
 
     # Solve for 10 eigenvalues
-    n_eigs = 10
+    n_eigs = 12
     # print(f"gross: {properties[0]}")
     # Set the section properties for this simple section
     # Normally, these might be calculated by an external package
@@ -182,6 +183,9 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
     }
 
 
+# ======================================================================================================================
+# FIND THE MINIMAS / CRITICAL LOAD RATIOS
+# ======================================================================================================================
 def plot_Sign_Curve(Section, plot: bool):
     # Inputs:
     sign_nodes = Section['nodes']
@@ -205,17 +209,19 @@ def plot_Sign_Curve(Section, plot: bool):
             loadFactor - 1] < \
                 Y_Values[loadFactor]:
             text = f"P/Py: {Y_Values[loadFactor - 1]:.3f} \nL: {X_Values[loadFactor - 1]}"
-            minimas.append([X_Values[loadFactor - 1], Y_Values[loadFactor - 1]])
+            # minimas = [index, length, loadfactor]
+            minimas.append([np.where(lengths == X_Values[loadFactor - 1])[0][0], X_Values[loadFactor - 1],
+                            Y_Values[loadFactor - 1]])
             # Annotating the minima values
             ax1.annotate(text, xy=(X_Values[loadFactor - 1], Y_Values[loadFactor - 1]),
                          xytext=(X_Values[loadFactor - 1] * 0.3, Y_Values[loadFactor - 1] * 0.3),
                          arrowprops=dict(facecolor='black', shrink=0.05, headwidth=4, width=1), fontsize=8)
 
     # Find the index of the item
-    h_index = np.where(lengths == RefLen)[0]
-    h_value = Y_Values[h_index][0]
+    h_index = np.where(lengths == RefLen)[0][0]
+    h_value = Y_Values[h_index]
     h_text = f'P/Py: {h_value:.3f}\nL: {RefLen}'
-    minimas.append([RefLen, h_value])
+    minimas.append([h_index, RefLen, h_value])
     # Annotating the minima values
     ax1.annotate(h_text, xy=(RefLen, h_value),
                  xytext=(RefLen * 0.3, h_value * 0.3),
@@ -269,6 +275,9 @@ def plot_Sign_Curve(Section, plot: bool):
     return minimas
 
 
+# ======================================================================================================================
+# EXPORT A REPORT
+# ======================================================================================================================
 def export_report(Section, minimas):
     # Inputs:
     nodes = Section['nodes']
@@ -321,13 +330,15 @@ def export_report(Section, minimas):
 
     # Create a dataframe for critical buckling length
     dfMinima = []
+    print(minimas)
     for i in minimas:
-        dfMinima.append([i[0], i[1]])
+        dfMinima.append([i[1], i[2]])
     Minima = pd.DataFrame(dfMinima, columns=['Critical Length [in]', 'P/Py'])
 
     # ==== CREATE A REPORT ====
     Rep = (
         f'{cons.secDivider}\n CALCULATION OF CRITICAL BUCKLING LOAD\n         USING SIGNATURE CURVE\n{cons.secDivider}\n'
+        f'Units are in Imperial [in, ksi]\n'
         f'{descp}\n'
         f'Steel yield stress:\n{cons.sp3}Fy: {fy:.3f} ksi\n'
         f'Member length:\n{cons.sp3}L: {RefLen:.3f} in\n'
@@ -347,6 +358,9 @@ def export_report(Section, minimas):
     print(Rep)
 
 
+# ======================================================================================================================
+# EXPLANATION OF INPUT TERMS
+# ======================================================================================================================
 # C_sign_solver(A, B, C, t, angle, Fyield, Case, MemLength)
 # Units [in, ksi]
 # A : Web height.
@@ -372,10 +386,17 @@ def export_report(Section, minimas):
 # Case : 'Axial' for uniform axial compression.
 #           'Flx' for bending creating compression at top fiber.
 # MemLength : Total member length
+# ======================================================================================================================
 
+
+# ======================================================================================================================
+# OUTPUT
+# ======================================================================================================================
+# Creation of a member to solve
 C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Flx', 150.0)
 # C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Flx', 150.0)
 
+# Creation of graph if True plot will be shown
 pC1 = plot_Sign_Curve(C1, True)
-
+# Export the report. (Section definition, Curve)
 export_report(C1, pC1)
