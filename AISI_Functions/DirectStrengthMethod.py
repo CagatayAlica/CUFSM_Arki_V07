@@ -1,7 +1,36 @@
 import math
 import BucklingAnalysis as bucklAna
+import Constants.Constants as cons
 
-mem1 = bucklAna.C1
+Section = bucklAna.C1
+# ==== Input ====
+Cb = 1.0
+E = 29500.0
+G = 1000.0
+fy = Section['Yield_stress']
+Lx = Section['Reference_Length']
+Kx = 1.0
+Ly = Section['Reference_Length']
+Ky = 1.0
+Lt = Section['Reference_Length']
+Kt = 1.0
+cx = Section['Sect_Props'][1][2]
+cy = Section['Sect_Props'][1][1]
+xo = Section['Sect_Props'][1][9]
+y0 = Section['Sect_Props'][1][10]
+A = Section['Sect_Props'][1][0]
+Ixx = Section['Sect_Props'][1][3]
+Wxx = Section['Sect_Props'][1][4]
+Ixy = Section['Sect_Props'][1][7]
+Iyy = Section['Sect_Props'][1][5]
+Wyy = Section['Sect_Props'][1][6]
+I11 = Section['Sect_Props'][1][3]
+I22 = Section['Sect_Props'][1][5]
+Cw = Section['Sect_Props'][1][11]
+J = Section['Sect_Props'][1][12]
+# ====   ====
+rx = math.sqrt(Ixx / A)
+ry = math.sqrt(Iyy / A)
 
 
 # print(mem1['Sect_Props'][1])
@@ -9,7 +38,7 @@ mem1 = bucklAna.C1
 # ======================================================================================================================
 # F. MEMBERS IN FLEXURE
 # ======================================================================================================================
-def F211(Section, **kwargs):
+def F211():
     """
     AISI S100-16
     F2.1.1 - Singly or Doubly Symmetric Sections Bending About Symmetric Axis
@@ -17,36 +46,11 @@ def F211(Section, **kwargs):
     :param kwargs:
     :return: Fcre - The elastic buckling stress.
     """
-    # ==== Input ====
-    Cb = kwargs['Cb']
-    E = 29500.0
-    G = 1000.0
-    L = Section['Reference_Length']
-    K = 1.0
-    Lt = kwargs['Lt']
-    Kt = kwargs['Kt']
-    cx = Section['Sect_Props'][1][2]
-    cy = Section['Sect_Props'][1][1]
-    xo = Section['Sect_Props'][1][9]
-    y0 = Section['Sect_Props'][1][10]
-    A = Section['Sect_Props'][1][0]
-    Ixx = Section['Sect_Props'][1][3]
-    Wxx = Section['Sect_Props'][1][4]
-    Ixy = Section['Sect_Props'][1][7]
-    Iyy = Section['Sect_Props'][1][5]
-    Wyy = Section['Sect_Props'][1][6]
-    I11 = Section['Sect_Props'][1][3]
-    I22 = Section['Sect_Props'][1][5]
-    Cw = Section['Sect_Props'][1][11]
-    J = Section['Sect_Props'][1][12]
-    # ====   ====
-    rx = math.sqrt(Ixx / A)
-    ry = math.sqrt(Iyy / A)
     # Eq. F2.1.1-3
     ro = math.sqrt(math.pow(rx, 2) + math.pow(ry, 2) + math.pow(xo, 2))
 
     # Eq. F2.1.1-4
-    sey = math.pow(math.pi, 2) * E / math.pow((K * L) / ry, 2)
+    sey = math.pow(math.pi, 2) * E / math.pow((Ky * Ly) / ry, 2)
     # Eq. F2.1.1-5
     p1 = 1 / (A * math.pow(ro, 2))
     p2 = G * J
@@ -59,7 +63,7 @@ def F211(Section, **kwargs):
     return Fcre
 
 
-def F21(Section, Fcre: float):
+def F21(Fcre: float):
     """
     AISI S100-16
     F2.1 - Initiation of Yielding Strength
@@ -90,7 +94,7 @@ def F21(Section, Fcre: float):
     return Mne
 
 
-def F32(Section, Mne: float, ratioFlxLocal: float):
+def F32(Mne: float, ratioFlxLocal: float):
     """
     AISI S100-16
     Section F3 Local Buckling Interacting with Yielding and Global Buckling
@@ -125,7 +129,7 @@ def F32(Section, Mne: float, ratioFlxLocal: float):
     return FlexuralStrength
 
 
-def F41(Section, ratioFlxDist: float):
+def F41(ratioFlxDist: float):
     """
     AISI S100-16
     Section F4 Distortional Buckling
@@ -159,12 +163,101 @@ def F41(Section, ratioFlxDist: float):
     return FlexuralStrength
 
 
-Fcre = F211(mem1, Cb=1.0, Kt=1.0, Lt=mem1['Reference_Length'])
-Mne = F21(mem1, Fcre)
-Mnl = F32(mem1, Mne, 0.647)
-Mnd = F41(mem1, 0.84)
+Fcre = F211()
+Mne = F21(Fcre)
+Mnl = F32(Mne, 0.647)
+Mnd = F41(0.84)
 
 print(Fcre)
 print(Mne)
 print(Mnl)
 print(Mnd)
+
+
+# ======================================================================================================================
+# E. MEMBERS IN COMPRESSION
+# ======================================================================================================================
+def E21():
+    # Fcre, flexural buckling stress.
+    # Eq. E2.1-1
+    Fcre = min(math.pow(cons.PI, 2) * E / math.pow(Kx * Lx / rx, 2),
+               math.pow(cons.PI, 2) * E / math.pow(Ky * Ly / ry, 2))
+    return Fcre
+
+
+def E22():
+    # Eq. E2.2-4
+    ro = math.sqrt(math.pow(rx, 2) + math.pow(ry, 2) + math.pow(xo, 2))
+    # Eq. E2.2-3
+    beta = 1 - math.pow(xo / ro, 2)
+    # Eq. E2.2-6
+    sex = math.pow(cons.PI, 2) * E / math.pow(Kx * Lx / rx, 2)
+    # Eq. E2.2-5
+    p1 = 1 / (A * math.pow(ro, 2))
+    p2 = G * J
+    p3 = math.pow(cons.PI, 2) * E * Cw
+    p4 = math.pow(Kt * Lt, 2)
+    set = p1 * (p2 + p3 / p4)
+    # Eq. E2.2-1
+    m1 = 1 / (2 * beta)
+    m2 = sex + set
+    m3 = math.pow(sex + set, 2)
+    m4 = 4 * beta * sex * set
+    Fcre = m1 * (m2 - math.sqrt(m3 - m4))
+    return Fcre
+
+
+def E2(Fcrexy, Fcret):
+    # Eq. E2-4
+    Fcre = min(Fcrexy, Fcret)
+    lamc = math.sqrt(fy / Fcre)
+    if lamc <= 1.5:
+        # Eq. E2-2
+        Fn = math.pow(0.658, math.pow(lamc, 2)) * fy
+    else:
+        # Eq. E2-3
+        Fn = (0.877 / math.pow(lamc, 2)) * fy
+    # Eq. E2-1
+    Pne = A * Fn
+    return Pne
+
+
+def E32(Pne: float, ratioAxialLocal: float):
+    Py = A * fy
+    Pcrl = ratioAxialLocal * Py
+    # Eq. E3.2.1-3
+    laml = math.sqrt(Pne / Pcrl)
+    if laml <= 0.776:
+        Pnl = Pne
+    else:
+        Pnl = (1 - 0.15 * math.pow(Pcrl / Pne, 0.4)) * math.pow(Pcrl / Pne, 0.4) * Pne
+    # ASD
+    omega = 1.80
+    # LRFD
+    ff = 0.85
+    Results = {'Pnl': Pnl, 'oPnl': Pnl / omega, 'ffPnl': ff * Pnl}
+    return Results
+
+
+def E41(Pne: float, ratioAxialDist: float):
+    # Eq. E4.1-4
+    Py = A * fy
+    Pcrd = ratioAxialDist * Py
+    # Eq. E4.1-3
+    lamd = math.sqrt(Pne / Pcrd)
+    if lamd <= 0.776:
+        Pnd = Pne
+    else:
+        Pnd = (1 - 0.25 * math.pow(Pcrd / Py, 0.6)) * math.pow(Pcrd / Py, 0.6) * Py
+    # ASD
+    omega = 1.80
+    # LRFD
+    ff = 0.85
+    Results = {'Pnd': Pnd, 'oPnd': Pnd / omega, 'ffPnd': ff * Pnd}
+    return Results
+
+Pne = E2(E21(),E22())
+Pnl = E32(Pne, 0.122)
+Pnd = E41(Pne, 0.122)
+print(Pnl)
+print(Pnd)

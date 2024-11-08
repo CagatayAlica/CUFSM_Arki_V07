@@ -5,7 +5,7 @@ from typing import Final, Literal
 tol1000 = 1.0 / 1000.0
 tol100 = 1.0 / 100.0
 # pi 3.14
-pi = math.pi
+PI = math.pi
 # Partial factor
 gamma0 = 1.00
 gamma1 = 1.25

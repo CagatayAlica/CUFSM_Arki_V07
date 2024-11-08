@@ -393,7 +393,7 @@ def export_report(Section, minimas):
 # OUTPUT
 # ======================================================================================================================
 # Creation of a member to solve
-C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Flx', 150.0)
+C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Axial', 150.0)
 # C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Flx', 150.0)
 
 # Creation of graph if True plot will be shown
