@@ -80,7 +80,6 @@ class C_Section:
         self.ang_shape = None
         self.orientation(self.angle)
 
-
     def centerline(self):
         self.r = self.R + self.t / 2.0
         # Centerline dimensions
@@ -259,7 +258,6 @@ class C_Section:
                               f'  └   ┘\n')
 
 
-
 class U_Section:
     def __init__(self, A: float, B: float, t: float, R: float, angle: Literal[0, 90, 270]):
         self.Usection = None
@@ -418,7 +416,6 @@ class U_Section:
         else:
             self.ang_shape = (f'  ┌---┐\n'
                               f'       \n')
-
 
 
 # ======================================================================================================================
