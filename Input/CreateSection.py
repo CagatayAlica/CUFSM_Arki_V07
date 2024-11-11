@@ -4,6 +4,9 @@ import numpy as np
 from typing import Literal
 
 
+# ======================================================================================================================
+# HELPER FUNCTIONS
+# ======================================================================================================================
 def rotateCoordinates(XY, angle):
     # Shape of the input matrix
     num_rows, num_cols = XY.shape
@@ -23,6 +26,35 @@ def rotateCoordinates(XY, angle):
     return XY, RotatedCoordinates
 
 
+def plotter(nodes, thk, descp, case, fy):
+    # Drawing the cross section shape
+    # IDs of the nodes.
+    id_nodes = nodes[:, 0]
+    # X values of the nodes.
+    x_nodes = nodes[:, 1]
+    # Y values of the nodes.
+    y_nodes = nodes[:, 2]
+
+    # Plotting
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    minimas = []
+    fig.suptitle(f'Signature Curve\n{case}\nfy: {fy:.2f} ksi')
+    # Thickness
+    thk = thk
+    for i in range(len(x_nodes)):
+        ax2.axes.annotate(f'{id_nodes[i] + 1:.0f}', xy=(x_nodes[i] * 1.03, y_nodes[i]), xycoords='data', fontsize=8)
+    ax2.plot(x_nodes, y_nodes, linewidth=thk * 30, color='green', marker="o", markersize=2)
+    ax2.axis('equal')
+    ax2.axes.set_xlabel('length [in]')
+    ax2.axes.set_ylabel('length [in]')
+    ax2.axes.set_title(f'Cross Section {descp}')
+    # Show the plot
+    plt.show()
+
+
+# ======================================================================================================================
+# CREATE A SECTION AND CREATE A LIST FOR NODE AND ELEMENTS
+# ======================================================================================================================
 class C_Section:
     def __init__(self, A: float, B: float, C: float, t: float, R: float, angle: Literal[0, 90, 270]):
         self.A = A
@@ -212,34 +244,160 @@ class C_Section:
                           f'   t:{self.t:.3f} in, Thickness')
 
 
-def plotter(nodes, thk, descp, case, fy):
-    # Drawing the cross section shape
-    # IDs of the nodes.
-    id_nodes = nodes[:, 0]
-    # X values of the nodes.
-    x_nodes = nodes[:, 1]
-    # Y values of the nodes.
-    y_nodes = nodes[:, 2]
+class U_Section:
+    def __init__(self, A: float, B: float, t: float, R: float, angle: Literal[0, 90, 270]):
+        self.Usection = None
+        self.A = A
+        self.B = B
+        self.t = t
+        self.R = R
+        self.angle = angle
+        self.aa = None
+        self.bb = None
+        self.tcore = None
+        self.a = None
+        self.b = None
+        self.r = None
+        self.nodes = np.array([[]])
+        self.elements = None
+        self.descp_rep = None
+        self.descp_Plot = None
+        self.centerline()
+        self.coordinates()
 
-    # Plotting
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-    minimas = []
-    fig.suptitle(f'Signature Curve\n{case}\nfy: {fy:.2f} ksi')
-    # Thickness
-    thk = thk
-    for i in range(len(x_nodes)):
-        ax2.axes.annotate(f'{id_nodes[i] + 1:.0f}', xy=(x_nodes[i] * 1.03, y_nodes[i]), xycoords='data', fontsize=8)
-    ax2.plot(x_nodes, y_nodes, linewidth=thk * 30, color='green', marker="o", markersize=2)
-    ax2.axis('equal')
-    ax2.axes.set_xlabel('length [in]')
-    ax2.axes.set_ylabel('length [in]')
-    ax2.axes.set_title(f'Cross Section {descp}')
-    # Show the plot
-    plt.show()
+    def centerline(self):
+        self.r = self.R + self.t / 2.0
+        # Centerline dimensions
+        self.aa = self.A - self.t
+        self.bb = self.B - self.t / 2.0
+        self.tcore = self.t - 0.04
+        # Flat portions
+        self.a = self.aa - 2 * self.r
+        self.b = self.bb - self.r
+
+    def tranform(self, alfa, origin):
+        # Transformation matrix
+        p = origin
+        c, s = np.cos(math.radians(alfa)), np.sin(math.radians(alfa))
+        j = np.array([[c, s, 0],
+                      [-s, c, 0],
+                      [0, 0, 1]])
+        RotatedCorners = np.matmul(j, p)
+        return RotatedCorners.T
+
+    def coordinates(self):
+        # Bottom right
+        radius = np.array([0, self.r, 0.0])
+
+        # Bottom left
+        origin2 = np.array([self.r, self.r, 0.0])
+        start_ang = 180
+        p21 = self.tranform(start_ang + 10, radius)
+        p22 = self.tranform(start_ang + 20, radius)
+        p23 = self.tranform(start_ang + 30, radius)
+        p24 = self.tranform(start_ang + 40, radius)
+        p25 = self.tranform(start_ang + 50, radius)
+        p26 = self.tranform(start_ang + 60, radius)
+        p27 = self.tranform(start_ang + 70, radius)
+        p28 = self.tranform(start_ang + 80, radius)
+        # Top left
+        origin3 = np.array([self.r, self.aa - self.r, 0.0])
+        start_ang = 270
+        p31 = self.tranform(start_ang + 10, radius)
+        p32 = self.tranform(start_ang + 20, radius)
+        p33 = self.tranform(start_ang + 30, radius)
+        p34 = self.tranform(start_ang + 40, radius)
+        p35 = self.tranform(start_ang + 50, radius)
+        p36 = self.tranform(start_ang + 60, radius)
+        p37 = self.tranform(start_ang + 70, radius)
+        p38 = self.tranform(start_ang + 80, radius)
+        # Top right
+        start_ang = 0
+
+        self.Usection = np.array([[self.bb, 0],
+                                  [self.r + self.b / 2.0, 0],
+                                  [self.r, 0],
+                                  [origin2[0] + p21[0], origin2[1] + p21[1]],
+                                  [origin2[0] + p22[0], origin2[1] + p22[1]],
+                                  [origin2[0] + p23[0], origin2[1] + p23[1]],
+                                  [origin2[0] + p24[0], origin2[1] + p24[1]],
+                                  [origin2[0] + p25[0], origin2[1] + p25[1]],
+                                  [origin2[0] + p26[0], origin2[1] + p26[1]],
+                                  [origin2[0] + p27[0], origin2[1] + p27[1]],
+                                  [origin2[0] + p28[0], origin2[1] + p28[1]],
+                                  [0, self.r],
+                                  [0, self.r + self.a * (1.0 / 4.0)],
+                                  [0, self.r + self.a * (2.0 / 4.0)],
+                                  [0, self.r + self.a * (3.0 / 4.0)],
+                                  [0, self.r + self.a],
+                                  [origin3[0] + p31[0], origin3[1] + p31[1]],
+                                  [origin3[0] + p32[0], origin3[1] + p32[1]],
+                                  [origin3[0] + p33[0], origin3[1] + p33[1]],
+                                  [origin3[0] + p34[0], origin3[1] + p34[1]],
+                                  [origin3[0] + p35[0], origin3[1] + p35[1]],
+                                  [origin3[0] + p36[0], origin3[1] + p36[1]],
+                                  [origin3[0] + p37[0], origin3[1] + p37[1]],
+                                  [origin3[0] + p38[0], origin3[1] + p38[1]],
+                                  [self.r, self.aa],
+                                  [self.r + self.b / 2.0, self.aa],
+                                  [self.bb, self.aa]])
+        # =================
+
+        # Function call for rotation
+        Usection, RotatedCsection = rotateCoordinates(self.Usection.T, self.angle)
+        # Create id numbers for each row
+        numbers = np.arange(RotatedCsection.shape[1], dtype=int)
+        # Adding id numbers to the coordinates matrix
+        UsectionWithNumbers = np.vstack([numbers, RotatedCsection])
+
+        # Creating ones
+        ones = np.ones((4, RotatedCsection.shape[1]))
+        # Adding one numbers to the coordinates matrix
+        UsectionWithNumbers = np.vstack([UsectionWithNumbers, ones])
+        # Creating zeros
+        zeros = np.zeros((RotatedCsection.shape[1]))
+        # Adding zeros to the coordinates matrix
+        UsectionWithNumbers = np.vstack([UsectionWithNumbers, zeros])
+
+        # ===================================
+        # Final nodes and elements for Opensees
+        # ===================================
+        self.nodes = UsectionWithNumbers.T
+        # If angle is 90, shift section as flange width in Y dir.
+        # If angle is 270, shift section as web height in X dir.
+        if self.angle == 90:
+            for i in self.nodes:
+                i[2] = i[2] + self.B
+        elif self.angle == 270:
+            for i in self.nodes:
+                i[1] = i[1] + self.A
+
+        # Shape of the node matrix
+        num_cols, num_rows = Usection.shape
+        self.elements = np.empty([num_rows - 1, 5])
+        for i in range(num_rows - 1):
+            self.elements[i, 0] = i
+            self.elements[i, 1] = i
+            self.elements[i, 2] = i + 1
+            self.elements[i, 3] = self.t
+            self.elements[i, 4] = 0
+
+        self.descp_Plot = f'Section :U {self.A:.3f} x {self.B:.3f} - {self.t:.3f}'
+        self.descp_rep = (f'Section :U {self.A:.3f} x {self.B:.3f} - {self.t:.3f}\n'
+                          f'   A:{self.A:.3f} in, Web height\n'
+                          f'   B:{self.B:.3f} in, Flange width\n'
+                          f'   R:{self.R:.3f} in, Inner radius\n'
+                          f'   t:{self.t:.3f} in, Thickness')
 
 
+# ======================================================================================================================
+# CALCULATION GROSS SECTION PROPERTIES
+# ======================================================================================================================
 class GrossProps:
     def __init__(self, x, y, t, r):
+        self.propDict = None
+        self.cy = None
+        self.cx = None
         self.zgr = None
         self.zgl = None
         self.zgt = None
@@ -351,22 +509,23 @@ class GrossProps:
         self.zgt = max(y) - self.zgb
         self.zgl = self.zgx
         self.zgr = max(x) - self.zgl
+        self.cx = max(self.zgl, self.zgr)
+        self.cy = max(self.zgb, self.zgt)
 
         # Data dictionary
-        prop = {
-            "Ar ": str(round(Ar, 3)) + " in2",
-            "zgx ": str(round(zgx, 3)) + " in",
-            "zgy ": str(round(zgy, 3)) + " in",
-            "Ix ": str(round(Ix, 3)) + " in4",
-            "Wx ": str(round(Ix * (1 - 2 * delta) / max(zgb, zgt), 3)) + " in3",
-            "Iy ": str(round(Iy, 3)) + " in4",
-            "Wy ": str(round(Iy * (1 - 2 * delta) / max(zgl, zgr), 3)) + " in3",
-            "Ixy ": str(round(Ixy, 3)) + " in4",
-            "Iw ": str(round(np.sum(Iw), 5)) + " in3",
-            "xsc ": str(round(xsc, 3)) + " in",
-            "ysc ": str(round(ysc, 3)) + " in",
-            "Cw ": str(round(Cw, 5)) + " in6",
-            "It ": str(round(It, 5)) + " in4",
-            "xo ": str(round(xo, 3)) + " in"
+        self.propDict = {
+            "Ar ": str(round(self.Ar, 3)) + " in2",
+            "zgx ": str(round(self.zgx, 3)) + " in",
+            "zgy ": str(round(self.zgy, 3)) + " in",
+            "Ix ": str(round(self.Ix, 3)) + " in4",
+            "Wx ": str(round(self.Ix * (1 - 2 * delta) / max(self.zgb, self.zgt), 3)) + " in3",
+            "Iy ": str(round(self.Iy, 3)) + " in4",
+            "Wy ": str(round(self.Iy * (1 - 2 * delta) / max(self.zgl, self.zgr), 3)) + " in3",
+            "Ixy ": str(round(self.Ixy, 3)) + " in4",
+            "Iw ": str(round(np.sum(self.Cw), 5)) + " in3",
+            "xsc ": str(round(self.xsc, 3)) + " in",
+            "ysc ": str(round(self.ysc, 3)) + " in",
+            "Cw ": str(round(self.Cw, 5)) + " in6",
+            "It ": str(round(self.It, 5)) + " in4",
+            "xo ": str(round(self.xo, 3)) + " in"
         }
-

@@ -2,42 +2,45 @@ from typing import Dict
 import numpy as np
 from pycufsm.CUFSM_Functions.fsm import strip
 from pycufsm.CUFSM_Functions.preprocess import stress_gen
-from pycufsm.CUFSM_Functions.types import BC, GBT_Con, Sect_Props
-from pycufsm.CUFSM_Functions.plotters import thecurve3
+from pycufsm.CUFSM_Functions.types import GBT_Con, Sect_Props
 import matplotlib.pyplot as plt
-from pycufsm.SectionProps.sectionDraw import ceeSection, lengthRange, grossProp
+from pycufsm.SectionProps.sectionDraw import lengthRange
 import pandas as pd
 import Constants.Constants as cons
+import Definitions as defin
 
 
 # ======================================================================================================================
 # PERFORM THE FINITE STRIP ANALYSIS
 # ======================================================================================================================
-def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float, Fyield: float, Case: str,
-                  MemLength: float) -> Dict[str, np.ndarray]:
+def C_sign_solver() -> Dict[str, np.ndarray]:
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
-    props = np.array([np.array([0, 29500, 29500, 0.3, 0.3, 29500 / (2 * (1 + 0.3))])])
+    E = defin.material.E
+    nu = defin.material.v
+    props = np.array([np.array([0, E, E, nu, nu, E / (2 * (1 + 0.3))])])
     # Steel yield stress
-    fy = Fyield  # ksi
-    # Define a shape
-    section = ceeSection(A, B, C, t, R, angle)
+    fy = defin.material.fy  # ksi
     # Nodes IDs for strips
-    nodes = section[0]
+    nodes = defin.section.nodes
     # Elements IDs for strips
-    elements = section[1]
+    elements = defin.section.elements
     # Steel thickness
-    thickness = section[2]
+    thickness = defin.section.t
     # Section name
-    descp = section[3]
+    descp = defin.section.descp_rep
+    # Analysis case
+    case = defin.case
+    # Section orientation
+    angle = defin.section.angle
     # Calculation the gross section properties
-    properties = grossProp(nodes[:, 1], nodes[:, 2], thickness, thickness)
+    properties = defin.gross
 
     # These lengths will generally provide sufficient accuracy for
     # local, distortional, and global buckling modes
     # Length units are inches
-    ReferenceLength = MemLength  # inches
+    ReferenceLength = defin.member.Lx  # inches
+    lengths = defin.member.lengths_data
 
-    lengths = lengthRange(ReferenceLength, "imperial")
     flag = np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     # No special springs or constraints
     springs = np.array([])
@@ -56,37 +59,35 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
     }
 
     # Simply-supported boundary conditions
-    b_c: BC = 'S-S'
+    b_c = defin.member.support
 
     # For signature curve analysis, only a single array of ones makes sense here
     m_all = np.ones((len(lengths), 1))
 
     # Solve for 10 eigenvalues
     n_eigs = 12
-    # print(f"gross: {properties[0]}")
-    # Set the section properties for this simple section
-    # Normally, these might be calculated by an external package
+    # Set the section properties
     sect_props: Sect_Props = {
-        'cx': properties[1][2],
-        'cy': properties[1][1],
-        'x0': properties[1][9],
-        'y0': properties[1][10],
+        'cx': properties.cx,
+        'cy': properties.cy,
+        'x0': properties.xsc,
+        'y0': properties.ysc,
         'phi': 0,
-        'A': properties[1][0],
-        'Ixx': properties[1][3],
-        'Ixy': properties[1][7],
-        'Iyy': properties[1][5],
-        'I11': properties[1][3],
-        'I22': properties[1][5],
-        'Cw': properties[1][11],
-        'J': properties[1][12],
+        'A': properties.Ar,
+        'Ixx': properties.Ix,
+        'Ixy': properties.Ixy,
+        'Iyy': properties.Iy,
+        'I11': properties.Ix,
+        'I22': properties.Iy,
+        'Cw': properties.Cw,
+        'J': properties.It,
         'B1': 0,
         'B2': 0,
         'wn': np.array([])
     }
 
-    # Generate the stress points assuming 50 ksi yield and pure compression
-    if Case == 'Axial':
+    # Generate the stress points
+    if case.case == 'Axial':
         nodes_p = stress_gen(
             nodes=nodes,
             forces={
@@ -139,25 +140,6 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
             curve[j, i, 0] = lengths[j]
             curve[j, i, 1] = curves[j, i]
 
-    fileindex = 1
-    fileddisplay = [1]
-    clas = 0
-    clasopt = 0
-    xmin = np.min(lengths) * 10 / 11
-    xmax = np.max(lengths) * 11 / 10
-    ymin = 0
-    ymax = np.min([np.max(signature), 3 * np.median(signature)])
-    modeindex = 1
-    length_index = 40
-    fileindex = 1
-    picpoint = [lengths[length_index - 1], curves[length_index - 1, modeindex - 1]]
-    # thecurve3(curve, clas, fileddisplay, 1, 1, clasopt, xmin, xmax, ymin, ymax, [1],
-    # fileindex, modeindex, picpoint)
-
-    # Return the important example results
-    # The signature curve is simply a matter of plotting the
-    # 'signature' values against the lengths
-    # (usually on a logarithmic axis)
 
     return {
         'curve': curve,
@@ -177,7 +159,7 @@ def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float
         'Reference_Length': ReferenceLength,
         'Section_Def': descp,
         'Yield_stress': fy,
-        'Case': Case,
+        'Case': case,
         'Angle': angle,
         'Sect_Props': properties
     }
@@ -202,7 +184,7 @@ def plot_Sign_Curve(Section, plot: bool):
     # Plotting
     fig, (ax1, ax2) = plt.subplots(1, 2)
     minimas = []
-    fig.suptitle(f'Signature Curve, {case}\nfy: {fy:.2f} ksi')
+    fig.suptitle(f'Signature Curve\n{case.case} case, {case.explanation}\nfy: {fy:.2f} ksi')
     # Finding the minima points
     for loadFactor in range(2, len(Y_Values)):
         if Y_Values[loadFactor - 1] < Y_Values[loadFactor - 2] and Y_Values[
@@ -288,7 +270,7 @@ def export_report(Section, minimas):
     fy = Section['Yield_stress']
     case = Section['Case']
     lengthsData = lengthRange(RefLen, "imperial")
-    GrossData = Section['Sect_Props'][0]
+    GrossData = Section['Sect_Props']
     angle = Section['Angle']
 
     ang0 = (f'      ┌-┐\n'
@@ -321,7 +303,7 @@ def export_report(Section, minimas):
 
     # Gross section properties
     dfGross = []
-    for key, value in GrossData.items():
+    for key, value in GrossData.propDict.items():
         dfGross.append([key, value])
     Gross = pd.DataFrame(dfGross, columns=['Type', 'Value / Unit'])
 
@@ -384,7 +366,7 @@ def export_report(Section, minimas):
 #                        """
 # Fyield : Steel yield stress.
 # Case : 'Axial' for uniform axial compression.
-#           'Flx' for bending creating compression at top fiber.
+#           'Flexural' for bending creating compression at top fiber.
 # MemLength : Total member length
 # ======================================================================================================================
 
@@ -393,8 +375,8 @@ def export_report(Section, minimas):
 # OUTPUT
 # ======================================================================================================================
 # Creation of a member to solve
-C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Axial', 150.0)
-# C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Flx', 150.0)
+C1 = C_sign_solver()
+
 
 # Creation of graph if True plot will be shown
 pC1 = plot_Sign_Curve(C1, True)

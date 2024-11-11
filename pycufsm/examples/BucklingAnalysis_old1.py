@@ -2,46 +2,42 @@ from typing import Dict
 import numpy as np
 from pycufsm.CUFSM_Functions.fsm import strip
 from pycufsm.CUFSM_Functions.preprocess import stress_gen
-from pycufsm.CUFSM_Functions.types import GBT_Con, Sect_Props
+from pycufsm.CUFSM_Functions.types import BC, GBT_Con, Sect_Props
+from pycufsm.CUFSM_Functions.plotters import thecurve3
 import matplotlib.pyplot as plt
-from pycufsm.SectionProps.sectionDraw import lengthRange, grossProp
+from pycufsm.SectionProps.sectionDraw import ceeSection, lengthRange, grossProp
 import pandas as pd
 import Constants.Constants as cons
-import Definitions as defin
 
 
 # ======================================================================================================================
 # PERFORM THE FINITE STRIP ANALYSIS
 # ======================================================================================================================
-def C_sign_solver() -> Dict[str, np.ndarray]:
+def C_sign_solver(A: float, B: float, C: float, t: float, R: float, angle: float, Fyield: float, Case: str,
+                  MemLength: float) -> Dict[str, np.ndarray]:
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
-    E = defin.material.E
-    nu = defin.material.v
-    props = np.array([np.array([0, E, E, nu, nu, E / (2 * (1 + 0.3))])])
+    props = np.array([np.array([0, 29500, 29500, 0.3, 0.3, 29500 / (2 * (1 + 0.3))])])
     # Steel yield stress
-    fy = defin.material.fy  # ksi
+    fy = Fyield  # ksi
+    # Define a shape
+    section = ceeSection(A, B, C, t, R, angle)
     # Nodes IDs for strips
-    nodes = defin.section.nodes
+    nodes = section[0]
     # Elements IDs for strips
-    elements = defin.section.elements
+    elements = section[1]
     # Steel thickness
-    thickness = defin.section.t
+    thickness = section[2]
     # Section name
-    descp = defin.section.descp_rep
-    # Analysis case
-    case = defin.case.case
-    # Section orientation
-    angle = defin.section.angle
-
+    descp = section[3]
     # Calculation the gross section properties
     properties = grossProp(nodes[:, 1], nodes[:, 2], thickness, thickness)
 
     # These lengths will generally provide sufficient accuracy for
     # local, distortional, and global buckling modes
     # Length units are inches
-    ReferenceLength = defin.member.Lx  # inches
-    lengths = defin.member.lengths_data
+    ReferenceLength = MemLength  # inches
 
+    lengths = lengthRange(ReferenceLength, "imperial")
     flag = np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     # No special springs or constraints
     springs = np.array([])
@@ -60,14 +56,16 @@ def C_sign_solver() -> Dict[str, np.ndarray]:
     }
 
     # Simply-supported boundary conditions
-    b_c = defin.member.support
+    b_c: BC = 'S-S'
 
     # For signature curve analysis, only a single array of ones makes sense here
     m_all = np.ones((len(lengths), 1))
 
     # Solve for 10 eigenvalues
     n_eigs = 12
-    # Set the section properties
+    # print(f"gross: {properties[0]}")
+    # Set the section properties for this simple section
+    # Normally, these might be calculated by an external package
     sect_props: Sect_Props = {
         'cx': properties[1][2],
         'cy': properties[1][1],
@@ -87,8 +85,8 @@ def C_sign_solver() -> Dict[str, np.ndarray]:
         'wn': np.array([])
     }
 
-    # Generate the stress points
-    if case == 'Axial':
+    # Generate the stress points assuming 50 ksi yield and pure compression
+    if Case == 'Axial':
         nodes_p = stress_gen(
             nodes=nodes,
             forces={
@@ -179,7 +177,7 @@ def C_sign_solver() -> Dict[str, np.ndarray]:
         'Reference_Length': ReferenceLength,
         'Section_Def': descp,
         'Yield_stress': fy,
-        'Case': case,
+        'Case': Case,
         'Angle': angle,
         'Sect_Props': properties
     }
@@ -395,8 +393,8 @@ def export_report(Section, minimas):
 # OUTPUT
 # ======================================================================================================================
 # Creation of a member to solve
-C1 = C_sign_solver()
-
+C1 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 0, 55.0, 'Axial', 150.0)
+# C2 = C_sign_solver(9.0, 2.5, 0.773, 0.059, 0.059, 270, 55.0, 'Flx', 150.0)
 
 # Creation of graph if True plot will be shown
 pC1 = plot_Sign_Curve(C1, True)

@@ -1,5 +1,5 @@
 import math
-import BucklingAnalysis as bucklAna
+from pycufsm.examples import BucklingAnalysis_old1 as bucklAna
 import Constants.Constants as cons
 
 Section = bucklAna.C1
