@@ -77,6 +77,9 @@ class C_Section:
         self.descp_Plot = None
         self.centerline()
         self.coordinates()
+        self.ang_shape = None
+        self.orientation(self.angle)
+
 
     def centerline(self):
         self.r = self.R + self.t / 2.0
@@ -243,6 +246,19 @@ class C_Section:
                           f'   R:{self.R:.3f} in, Inner radius\n'
                           f'   t:{self.t:.3f} in, Thickness')
 
+    def orientation(self, angle):
+        if angle == 0:
+            self.ang_shape = (f'      ┌-┐\n'
+                              f'        |\n'
+                              f'      └-┘\n')
+        elif angle == 270:
+            self.ang_shape = (f'   ┌   ┐\n'
+                              f'   └---┘\n')
+        else:
+            self.ang_shape = (f'  ┌---┐\n'
+                              f'  └   ┘\n')
+
+
 
 class U_Section:
     def __init__(self, A: float, B: float, t: float, R: float, angle: Literal[0, 90, 270]):
@@ -264,6 +280,8 @@ class U_Section:
         self.descp_Plot = None
         self.centerline()
         self.coordinates()
+        self.ang_shape = None
+        self.orientation(self.angle)
 
     def centerline(self):
         self.r = self.R + self.t / 2.0
@@ -388,6 +406,19 @@ class U_Section:
                           f'   B:{self.B:.3f} in, Flange width\n'
                           f'   R:{self.R:.3f} in, Inner radius\n'
                           f'   t:{self.t:.3f} in, Thickness')
+
+    def orientation(self, angle):
+        if angle == 0:
+            self.ang_shape = (f'   -┐\n'
+                              f'    |\n'
+                              f'   -┘\n')
+        elif angle == 270:
+            self.ang_shape = (f'       \n'
+                              f'  └---┘\n')
+        else:
+            self.ang_shape = (f'  ┌---┐\n'
+                              f'       \n')
+
 
 
 # ======================================================================================================================

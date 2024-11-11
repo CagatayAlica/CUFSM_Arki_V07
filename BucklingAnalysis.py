@@ -32,6 +32,7 @@ def C_sign_solver() -> Dict[str, np.ndarray]:
     case = defin.case
     # Section orientation
     angle = defin.section.angle
+    orientationShape = defin.section.ang_shape
     # Calculation the gross section properties
     properties = defin.gross
 
@@ -161,6 +162,7 @@ def C_sign_solver() -> Dict[str, np.ndarray]:
         'Yield_stress': fy,
         'Case': case,
         'Angle': angle,
+        'orientationShape': orientationShape,
         'Sect_Props': properties
     }
 
@@ -272,22 +274,7 @@ def export_report(Section, minimas):
     lengthsData = lengthRange(RefLen, "imperial")
     GrossData = Section['Sect_Props']
     angle = Section['Angle']
-
-    ang0 = (f'      ┌-┐\n'
-            f'        |\n'
-            f'      └-┘\n')
-    ang270 = (f'   ┌   ┐\n'
-              f'   └---┘\n')
-    ang90 = (f'  ┌---┐\n'
-             f'  └   ┘\n')
-
-    # Select shape
-    if angle == 0:
-        shape = ang0
-    elif angle == 90:
-        shape = ang90
-    else:
-        shape = ang270
+    ang_shape = Section['orientationShape']
 
     # Create a dataframe for nodes
     dfNodes = []
@@ -325,7 +312,7 @@ def export_report(Section, minimas):
         f'Steel yield stress:\n{cons.sp3}Fy: {fy:.3f} ksi\n'
         f'Member length:\n{cons.sp3}L: {RefLen:.3f} in\n'
         f'Orientation:\n'
-        f'{cons.sp3}Angle: {angle}\n{shape}'
+        f'{cons.sp3}Angle: {angle}\n{ang_shape}'
         f'Check case:\n'
         f'{cons.sp3}Case: {case}\n'
         f'Boundary Condition:\n'

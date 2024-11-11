@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Section and other definitions are implemented and process goes on.">
+    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Gross section properties are implemented as separate class.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" beforeDir="false" afterPath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BucklingAnalysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/BucklingAnalysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BucklingAnalysis_V02.py" beforeDir="false" afterPath="$PROJECT_DIR$/pycufsm/examples/BucklingAnalysis_old1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Definitions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Input/Cases.py" beforeDir="false" afterPath="$PROJECT_DIR$/Input/Cases.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Input/CreateSection.py" beforeDir="false" afterPath="$PROJECT_DIR$/Input/CreateSection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Input/Member.py" beforeDir="false" afterPath="$PROJECT_DIR$/Input/Member.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,7 +212,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731075953270</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Gross section properties are implemented as separate class.">
+      <option name="closed" value="true" />
+      <created>1731311775822</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1731311775822</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -229,7 +233,8 @@
     <MESSAGE value="AISI functions are implemented." />
     <MESSAGE value="DSM functions are implemented." />
     <MESSAGE value="Section and other definitions are implemented and process goes on." />
-    <option name="LAST_COMMIT_MESSAGE" value="Section and other definitions are implemented and process goes on." />
+    <MESSAGE value="Gross section properties are implemented as separate class." />
+    <option name="LAST_COMMIT_MESSAGE" value="Gross section properties are implemented as separate class." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
