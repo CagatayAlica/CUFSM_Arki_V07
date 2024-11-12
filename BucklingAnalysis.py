@@ -299,7 +299,6 @@ def export_report(Section, minimas):
 
     # Create a dataframe for critical buckling length
     dfMinima = []
-    print(minimas)
     for i in minimas:
         dfMinima.append([i[1], i[2]])
     Minima = pd.DataFrame(dfMinima, columns=['Critical Length [in]', 'P/Py'])
@@ -363,9 +362,9 @@ def export_report(Section, minimas):
 # ======================================================================================================================
 # Creation of a member to solve
 C1 = C_sign_solver()
-
-
 # Creation of graph if True plot will be shown
 pC1 = plot_Sign_Curve(C1, True)
+# Print minimas
+print(pC1)
 # Export the report. (Section definition, Curve)
 export_report(C1, pC1)

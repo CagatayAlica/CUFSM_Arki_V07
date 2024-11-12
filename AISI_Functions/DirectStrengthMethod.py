@@ -1,8 +1,11 @@
 import math
 from pycufsm.examples import BucklingAnalysis_old1 as bucklAna
 import Constants.Constants as cons
+import Definitions as defin
 
 Section = bucklAna.C1
+Minimas = bucklAna.pC1
+LoadCase = defin.case
 # ==== Input ====
 Cb = 1.0
 E = 29500.0
@@ -32,8 +35,39 @@ J = Section['Sect_Props'][1][12]
 rx = math.sqrt(Ixx / A)
 ry = math.sqrt(Iyy / A)
 
+# Finding the minimas
+Critical_Length_Distortional = None
+Critical_Length_Local = None
+Critical_Length_Global = None
+ratio_Local = None
+ratio_Distortional = None
+ratio_Global = None
 
-# print(mem1['Sect_Props'][1])
+if len(Minimas) == 1:
+    # Global buckling case.
+    Critical_Length_Global = Minimas[0][0]
+    ratio_Global = Minimas[0][1]
+if len(Minimas) == 2:
+    # First minima for local buckling case.
+    Critical_Length_Local = Minimas[0][0]
+    ratio_Local = Minimas[0][1]
+    # There is no second minima. Therefore, distortional case is taken equal to local case.
+    Critical_Length_Distortional = Minimas[0][0]
+    ratio_Distortional = Minimas[0][1]
+    # Global buckling case.
+    Critical_Length_Global = Minimas[1][0]
+    ratio_Global = Minimas[1][1]
+if len(Minimas) > 2:
+    # First minima for local buckling case.
+    Critical_Length_Local = Minimas[0][0]
+    ratio_Local = Minimas[0][1]
+    # Second minima for distortional buckling case.
+    Critical_Length_Distortional = Minimas[1][0]
+    ratio_Distortional = Minimas[1][1]
+    # Global buckling case.
+    Critical_Length_Global = Minimas[-1][0]
+    ratio_Global = Minimas[-1][1]
+
 
 # ======================================================================================================================
 # F. MEMBERS IN FLEXURE
@@ -163,17 +197,6 @@ def F41(ratioFlxDist: float):
     return FlexuralStrength
 
 
-Fcre = F211()
-Mne = F21(Fcre)
-Mnl = F32(Mne, 0.647)
-Mnd = F41(0.84)
-
-print(Fcre)
-print(Mne)
-print(Mnl)
-print(Mnd)
-
-
 # ======================================================================================================================
 # E. MEMBERS IN COMPRESSION
 # ======================================================================================================================
@@ -256,8 +279,19 @@ def E41(Pne: float, ratioAxialDist: float):
     Results = {'Pnd': Pnd, 'oPnd': Pnd / omega, 'ffPnd': ff * Pnd}
     return Results
 
-Pne = E2(E21(),E22())
-Pnl = E32(Pne, 0.122)
-Pnd = E41(Pne, 0.122)
-print(Pnl)
-print(Pnd)
+
+if LoadCase.case == 'Axial':
+    Pne = E2(E21(), E22())
+    Pnl = E32(Pne, ratio_Local)
+    Pnd = E41(Pne, ratio_Distortional)
+    print(Pnl)
+    print(Pnd)
+else:
+    Fcre = F211()
+    Mne = F21(Fcre)
+    Mnl = F32(Mne, ratio_Local)
+    Mnd = F41(ratio_Distortional)
+    print(Fcre)
+    print(Mne)
+    print(Mnl)
+    print(Mnd)
