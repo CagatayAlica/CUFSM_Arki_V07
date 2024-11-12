@@ -43,6 +43,10 @@ ratio_Local = None
 ratio_Distortional = None
 ratio_Global = None
 
+# check point for empty minimas list
+if not Minimas:
+    raise Exception("There is no minima in the curve!")
+
 if len(Minimas) == 1:
     # Global buckling case.
     Critical_Length_Global = Minimas[0][0]
