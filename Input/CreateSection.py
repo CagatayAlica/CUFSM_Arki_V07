@@ -423,6 +423,8 @@ class U_Section:
 # ======================================================================================================================
 class GrossProps:
     def __init__(self, x, y, t, r):
+        self.Wy = None
+        self.Wx = None
         self.propDict = None
         self.cy = None
         self.cx = None
@@ -539,6 +541,9 @@ class GrossProps:
         self.zgr = max(x) - self.zgl
         self.cx = max(self.zgl, self.zgr)
         self.cy = max(self.zgb, self.zgt)
+        # Section modulus
+        self.Wx = self.Ix / max(self.zgb, self.zgt)
+        self.Wy = self.Iy / max(self.zgl, self.zgr)
 
         # Data dictionary
         self.propDict = {
@@ -546,9 +551,9 @@ class GrossProps:
             "zgx ": str(round(self.zgx, 3)) + " in",
             "zgy ": str(round(self.zgy, 3)) + " in",
             "Ix ": str(round(self.Ix, 3)) + " in4",
-            "Wx ": str(round(self.Ix * (1 - 2 * delta) / max(self.zgb, self.zgt), 3)) + " in3",
+            "Wx ": str(round(self.Ix / max(self.zgb, self.zgt), 3)) + " in3",
             "Iy ": str(round(self.Iy, 3)) + " in4",
-            "Wy ": str(round(self.Iy * (1 - 2 * delta) / max(self.zgl, self.zgr), 3)) + " in3",
+            "Wy ": str(round(self.Iy / max(self.zgl, self.zgr), 3)) + " in3",
             "Ixy ": str(round(self.Ixy, 3)) + " in4",
             "Iw ": str(round(np.sum(self.Cw), 5)) + " in3",
             "xsc ": str(round(self.xsc, 3)) + " in",

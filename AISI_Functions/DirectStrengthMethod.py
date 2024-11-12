@@ -1,36 +1,39 @@
 import math
-from pycufsm.examples import BucklingAnalysis_old1 as bucklAna
+import BucklingAnalysis as bucklAna
 import Constants.Constants as cons
 import Definitions as defin
 
 Section = bucklAna.C1
 Minimas = bucklAna.pC1
 LoadCase = defin.case
+properties = defin.gross
+
 # ==== Input ====
-Cb = 1.0
-E = 29500.0
-G = 1000.0
-fy = Section['Yield_stress']
-Lx = Section['Reference_Length']
-Kx = 1.0
-Ly = Section['Reference_Length']
-Ky = 1.0
-Lt = Section['Reference_Length']
-Kt = 1.0
-cx = Section['Sect_Props'][1][2]
-cy = Section['Sect_Props'][1][1]
-xo = Section['Sect_Props'][1][9]
-y0 = Section['Sect_Props'][1][10]
-A = Section['Sect_Props'][1][0]
-Ixx = Section['Sect_Props'][1][3]
-Wxx = Section['Sect_Props'][1][4]
-Ixy = Section['Sect_Props'][1][7]
-Iyy = Section['Sect_Props'][1][5]
-Wyy = Section['Sect_Props'][1][6]
-I11 = Section['Sect_Props'][1][3]
-I22 = Section['Sect_Props'][1][5]
-Cw = Section['Sect_Props'][1][11]
-J = Section['Sect_Props'][1][12]
+Cb = 1.67
+E = defin.material.E
+G = defin.material.G
+fy = defin.material.fy
+Lx = defin.member.Lx
+Kx = defin.member.Kx
+Ly = defin.member.Ly
+Ky = defin.member.Ky
+Lt = defin.member.Lt
+Kt = defin.member.Kt
+cx = properties.cx
+cy = properties.cy
+xo = properties.xsc
+y0 = properties.ysc
+A = properties.Ar
+Ixx = properties.Ix
+Wxx = properties.Wx
+Ixy = properties.Ixy
+Iyy = properties.Iy
+Wyy = properties.Wy
+I11 = properties.Ix
+I22 = properties.Iy
+Cw = properties.Cw
+J = properties.It
+
 # ====   ====
 rx = math.sqrt(Ixx / A)
 ry = math.sqrt(Iyy / A)
@@ -86,7 +89,6 @@ def F211():
     """
     # Eq. F2.1.1-3
     ro = math.sqrt(math.pow(rx, 2) + math.pow(ry, 2) + math.pow(xo, 2))
-
     # Eq. F2.1.1-4
     sey = math.pow(math.pi, 2) * E / math.pow((Ky * Ly) / ry, 2)
     # Eq. F2.1.1-5
@@ -95,9 +97,13 @@ def F211():
     p3 = math.pow(math.pi, 2) * E * Cw
     p4 = math.pow(Kt * Lt, 2)
     set = p1 * (p2 + p3 / p4)
-
     # Eq. F2.1.1-1
     Fcre = Cb * ro * A / Wxx * math.sqrt(sey * set)
+
+    Rep = (
+        f'{cons.secDivider}\n CALCULATION OF CRITICAL BUCKLING LOAD\n    CHAPTER F. MEMBERS IN FLEXURE\n{cons.secDivider}\n'
+        f'The global elastic buckling stress.\nFcre: {Fcre:.3f} ksi. Eq.F2.1.1-1 ')
+    print(Rep)
     return Fcre
 
 
@@ -110,25 +116,28 @@ def F21(Fcre: float):
     with Section F2.1.1 or Appendix 2.
     :return: Mne, The nominal flexural strength [resistance].
     """
-
-    fy = Section['Yield_stress']
-    Wxx = Section['Sect_Props'][1][4]
+    Rep = f'The nominal flexural strength:\n'
     if Fcre >= 2.78 * fy:
         # Equation F2.1-3
         Fn = fy
+        Rep += f'Fcre >= 2.78 x fy\nFn = {Fn:.3f} ksi. Eq.F2.1-3\n'
     elif 0.56 * fy < Fcre < 2.78 * fy:
         # Equation F2.1-4
         Fn = 10.0 / 9.0 * fy * (1 - (10 * fy) / (36 * Fcre))
+        Rep += f'0.56 x fy < Fcre < 2.78 x fy\nFn = {Fn:.3f} ksi. Eq.F2.1-4\n'
     else:
         # Equation F2.1-5
         Fn = Fcre
+        Rep += f'Fcre > 2.78 x fy\nFn = {Fn:.3f} ksi. Eq.F2.1-5\n'
     # Equation F2.1-2
     My = Wxx * fy
-    print(f'My = {My}')
+    Rep += f'My = {My:.3f} kip-in. Eq.F2.1-2\n'
     # Equation F2.1-1
     Mne = Wxx * Fn
     if Mne > My:
         Mne = My
+    Rep += f'Mne = {Mne:.3f} kip-in. Eq.F2.1-1\n'
+    print(Rep)
     return Mne
 
 
@@ -144,8 +153,7 @@ def F32(Mne: float, ratioFlxLocal: float):
     :param ratioFlxLocal: Load factor for local buckling mode.
     :return: Mnl, The nominal flexural strength, for considering interaction of local buckling and global buckling.
     """
-    fy = Section['Yield_stress']
-    Wxx = Section['Sect_Props'][1][4]
+
     # Section F3.2 Direct strength method.
     # Section F3.2.1 Members without holes.
     My = Wxx * fy
@@ -176,8 +184,7 @@ def F41(ratioFlxDist: float):
     :param ratioFlxDist: Load factor for distortional buckling mode.
     :return: Mnd
     """
-    fy = Section['Yield_stress']
-    Wxx = Section['Sect_Props'][1][4]
+
     # Section F4.1 Members without holes.
     # Equation F4.1-4
     My = Wxx * fy
@@ -197,7 +204,7 @@ def F41(ratioFlxDist: float):
     omega = 1.67
     # LRFD
     ff = 0.90
-    FlexuralStrength = {'oMnd': Mnd / omega, 'ffMnd': ff * Mnd}
+    FlexuralStrength = {'Mnd': Mnd, 'oMnd': Mnd / omega, 'ffMnd': ff * Mnd}
     return FlexuralStrength
 
 

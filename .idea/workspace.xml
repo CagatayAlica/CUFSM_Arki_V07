@@ -7,6 +7,9 @@
     <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Gross section properties are implemented as separate class.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" beforeDir="false" afterPath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Definitions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Input/CreateSection.py" beforeDir="false" afterPath="$PROJECT_DIR$/Input/CreateSection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Input/Material.py" beforeDir="false" afterPath="$PROJECT_DIR$/Input/Material.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,18 +40,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.BucklingAnalysis.executor&quot;: &quot;Run&quot;,
-    &quot;Python.DirectStrengthMethod.executor&quot;: &quot;Run&quot;,
-    &quot;Python.example_1.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Development__02&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;H:/My Drive/Py/CUFSM_Arki_V07/BucklingAnalysis.py&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.BucklingAnalysis.executor": "Run",
+    "Python.Definitions.executor": "Run",
+    "Python.DirectStrengthMethod.executor": "Run",
+    "Python.example_1.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Development__02",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "G:/My Drive/Py/CUFSM_Arki_V07/AISI_Functions/DirectStrengthMethod.py"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="H:\My Drive\Py\CUFSM_Arki_V07" />
@@ -62,7 +66,7 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="BucklingAnalysis" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="DirectStrengthMethod" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CUFSM_Arki_V07" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -75,7 +79,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BucklingAnalysis.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -86,10 +90,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.BucklingAnalysis" />
-        <item itemvalue="Python.BucklingAnalysis" />
-        <item itemvalue="Python.BucklingAnalysis" />
-        <item itemvalue="Python.BucklingAnalysis" />
+        <item itemvalue="Python.DirectStrengthMethod" />
+        <item itemvalue="Python.DirectStrengthMethod" />
+        <item itemvalue="Python.DirectStrengthMethod" />
+        <item itemvalue="Python.DirectStrengthMethod" />
       </list>
     </recent_temporary>
   </component>
@@ -245,7 +249,15 @@
       <option name="project" value="LOCAL" />
       <updated>1731396394797</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Gross section properties are implemented as separate class.">
+      <option name="closed" value="true" />
+      <created>1731403396399</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1731403396399</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
