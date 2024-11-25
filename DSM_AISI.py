@@ -45,6 +45,19 @@ import AISI_Functions.DirectStrengthMethod as strength
 #           'Flexural' for bending creating compression at top fiber.
 # MemLength : Total member length
 # ======================================================================================================================
+def section_dimensions(**kwargs):
+    A = kwargs['A']
+    B = kwargs['B']
+    C = kwargs['C']
+    t = kwargs['t']
+    R = kwargs['R']
+    section_dim = {'A': A,
+                   'B': B,
+                   'C': C,
+                   't': t,
+                   'R': R}
+    return section_dim
+
 
 def section_input(**kwargs):
     '''
@@ -52,11 +65,12 @@ def section_input(**kwargs):
     :param kwargs:
     :return:
     '''
-    A = kwargs['A']
-    B = kwargs['B']
-    C = kwargs['C']
-    t = kwargs['t']
-    R = kwargs['R']
+    Section_dims = kwargs['Section_Dimensions']
+    A = Section_dims['A']
+    B = Section_dims['B']
+    C = Section_dims['C']
+    t = Section_dims['t']
+    R = Section_dims['R']
     Angle = kwargs['ang']
     Analysis_case: Literal['Axial', 'Flexural'] = kwargs['case']
 
@@ -102,20 +116,19 @@ def member_input(**kwargs):
 # ======================================================================================================================
 # Member
 # -------------------------------------------------------
-member = member_input(Lx=110.0, Ly=110.0, Lt=110.0, Kx=1.0, Ky=1.0, Kt=1.0, support='S-S')
+member = member_input(Lx=240.0, Ly=120.0, Lt=120.0, Kx=1.0, Ky=1.0, Kt=1.0, support='S-S')
 
 # Material
 # -------------------------------------------------------
-material = material_input(fy=33.0)
+material = material_input(fy=55.0)
 
 # Sections
 # _______________________________________________________
-C_Axial = section_input(A=9.0, B=2.5, C=1.625, t=0.075, R=0.1870, ang=0, case='Axial')
-C_ang0_Flex = section_input(A=9.0, B=2.5, C=1.625, t=0.075, R=0.1870, ang=0, case='Flexural')
-C_ang90_Flex = section_input(A=9.0, B=2.5, C=1.625, t=0.075, R=0.1870, ang=90, case='Flexural')
-C_ang270_Flex = section_input(A=9.0, B=2.5, C=1.625, t=0.075, R=0.1870, ang=270, case='Flexural')
-# List for iteration for all the cases:
-Analysis_Cases = [C_Axial, C_ang0_Flex, C_ang90_Flex, C_ang270_Flex]
+Section_Shape = section_dimensions(A=9.0, B=2.5, C=0.773, t=0.059, R=0.1875)
+C_Axial = section_input(Section_Dimensions=Section_Shape, ang=0, case='Axial')
+C_ang0_Flex = section_input(Section_Dimensions=Section_Shape, ang=0, case='Flexural')
+C_ang90_Flex = section_input(Section_Dimensions=Section_Shape, ang=90, case='Flexural')
+C_ang270_Flex = section_input(Section_Dimensions=Section_Shape, ang=270, case='Flexural')
 
 
 # ======================================================================================================================

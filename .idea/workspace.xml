@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Direct Strength Method is implemented.&#10;It is returning ASD and LRFD strengths of the member.">
-      <change afterPath="$PROJECT_DIR$/EnterGate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_4_11_2024_11_42__Changes_.xml" beforeDir="false" />
+    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="All files are re-arranged.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" beforeDir="false" afterPath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BucklingAnalysis.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Definitions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Input/Cases.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DSM_AISI.py" beforeDir="false" afterPath="$PROJECT_DIR$/DSM_AISI.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -274,7 +270,23 @@
       <option name="project" value="LOCAL" />
       <updated>1731501725107</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="All files are re-arranged.">
+      <option name="closed" value="true" />
+      <created>1732538850259</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1732538850259</updated>
+    </task>
+    <task id="LOCAL-00022" summary="All files are re-arranged.">
+      <option name="closed" value="true" />
+      <created>1732538879892</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1732538879893</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -289,7 +301,8 @@
     <MESSAGE value="Section and other definitions are implemented and process goes on." />
     <MESSAGE value="Gross section properties are implemented as separate class." />
     <MESSAGE value="Direct Strength Method is implemented.&#10;It is returning ASD and LRFD strengths of the member." />
-    <option name="LAST_COMMIT_MESSAGE" value="Direct Strength Method is implemented.&#10;It is returning ASD and LRFD strengths of the member." />
+    <MESSAGE value="All files are re-arranged." />
+    <option name="LAST_COMMIT_MESSAGE" value="All files are re-arranged." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

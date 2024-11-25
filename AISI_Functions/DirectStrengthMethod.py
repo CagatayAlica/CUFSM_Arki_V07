@@ -119,8 +119,8 @@ def stregnths(Minimas, Material, Section, Member):
         Pcrl = ratioAxialLocal * Py
         Rep = f'==== Section E3 Local Buckling Interacting With Yielding and Global Buckling.\n==== Section E3.2.1 Members without holes.\n'
         Rep += (f'Py = {Py:.3f} kips. Eq.E4.1-4\n'
-                f'P/Py = {ratioAxialLocal}\n'
-                f'Pcrd = {Pcrl:.3f} kips.\n')
+                f'P/Py = {ratioAxialLocal:.3f}\n'
+                f'Pcrl = {Pcrl:.3f} kips.\n')
         # Eq. E3.2.1-3
         laml = math.sqrt(Pne / Pcrl)
         Rep += f'lamd = {laml:.3f} Eq.E3.2.1-3\n'
@@ -148,7 +148,7 @@ def stregnths(Minimas, Material, Section, Member):
         Pcrd = ratioAxialDist * Py
         Rep = f'==== Section E4 Distortional Buckling.\n==== Section F4.1 Members without holes.\n'
         Rep += (f'Py = {Py:.3f} kips. Eq.E4.1-4\n'
-                f'P/Py = {ratioAxialDist}\n'
+                f'P/Py = {ratioAxialDist:.3f}\n'
                 f'Pcrd = {Pcrd:.3f} kips.\n')
         # Eq. E4.1-3
         lamd = math.sqrt(Pne / Pcrd)
@@ -330,10 +330,12 @@ def stregnths(Minimas, Material, Section, Member):
         print(Rep)
         return FlexuralStrength
 
+
     if Section['case'] == 'Axial':
         Pne = E2(E21(), E22())
         Pnl = E32(Pne, ratio_Local)
         Pnd = E41(Pne, ratio_Distortional)
+        print(f'Pne = {Pne}')
         print(f'Pnl = {Pnl}')
         print(f'Pnd = {Pnd}')
         Strength_ASD = min(min(Pnl['ASD']['oPne'], Pnl['ASD']['oPnl']), Pnd['ASD']['oPnd'])
