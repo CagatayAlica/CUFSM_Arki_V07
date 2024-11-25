@@ -1,46 +1,163 @@
+from typing import Literal
 from typing import Dict
+import pandas as pd
 import numpy as np
+import Input.CreateSection as sec
+import Input.Material as mat
+import Input.Member as mem
+
 from pycufsm.CUFSM_Functions.fsm import strip
 from pycufsm.CUFSM_Functions.preprocess import stress_gen
 from pycufsm.CUFSM_Functions.types import GBT_Con, Sect_Props
 import matplotlib.pyplot as plt
 from pycufsm.SectionProps.sectionDraw import lengthRange
-import pandas as pd
+
 import Constants.Constants as cons
-import Definitions as defin
+import AISI_Functions.DirectStrengthMethod as strength
+
+
+# import Definitions as defin
+
+# ======================================================================================================================
+# EXPLANATION OF INPUT TERMS
+# ======================================================================================================================
+# C_sign_solver(A, B, C, t, angle, Fy, Case, MemLength)
+# Units [in, ksi]
+# A : Web height.
+# B : Flange width.
+# C : Lip length.
+# t : Steel thickness.
+# R : Inner radius.
+# angle : Orientation of the section.
+#                 "0": """
+#                        ┌-┐
+#                        |
+#                        └-┘
+#                        """,
+#                "270": """
+#                        ┌   ┐
+#                        └---┘
+#                        """,
+#                "90": """
+#                        ┌---┐
+#                        └   ┘
+#                        """
+# Fy : Steel yield stress.
+# Case : 'Axial' for uniform axial compression.
+#           'Flexural' for bending creating compression at top fiber.
+# MemLength : Total member length
+# ======================================================================================================================
+
+def section_input(**kwargs):
+    '''
+    This function calculates the member strength as per AISI using Direct Strength Method.
+    :param kwargs:
+    :return:
+    '''
+    A = kwargs['A']
+    B = kwargs['B']
+    C = kwargs['C']
+    t = kwargs['t']
+    R = kwargs['R']
+    Angle = kwargs['ang']
+    Analysis_case: Literal['Axial', 'Flexural'] = kwargs['case']
+
+    # Creating a section and calculates the nodes and elements.
+    section = sec.C_Section(A=A, B=B, C=C, t=t, R=R, angle=Angle)
+    # Calculate the gross-section properties
+    gross = sec.GrossProps(section.nodes[:, 1], section.nodes[:, 2], section.t, section.r)
+    # Define an analysis case
+    case = Analysis_case
+
+    # Results in dictionary
+    section_dict = {'section': section,
+                    'gross': gross,
+                    'case': case}
+
+    return section_dict
+
+
+def material_input(**kwargs):
+    fy = kwargs['fy']
+    # Define the material
+    material = mat.Material(fy)
+    return material
+
+
+def member_input(**kwargs):
+    Lx = kwargs['Lx']
+    Ly = kwargs['Ly']
+    Lt = kwargs['Lt']
+    Kx = kwargs['Kx']
+    Ky = kwargs['Ky']
+    Kt = kwargs['Kt']
+    Support: Literal["S-S", "C-C", "S-C", "C-F", "C-G"] = kwargs['support']
+    # Define a member
+    defined_member = mem.Member(Lx=Lx, Ly=Ly, Lt=Lt,
+                                Kx=Kx, Ky=Ky, Kt=Kt,
+                                support=Support)
+    return defined_member
+
+
+# ======================================================================================================================
+# MAIN DEFINITIONS
+# ======================================================================================================================
+# Member
+# -------------------------------------------------------
+member = member_input(Lx=110.0, Ly=110.0, Lt=110.0, Kx=1.0, Ky=1.0, Kt=1.0, support='S-S')
+
+# Material
+# -------------------------------------------------------
+material = material_input(fy=33.0)
+
+# Sections
+# _______________________________________________________
+C_Axial = section_input(A=9.0, B=2.5, C=1.625, t=0.075, R=0.1870, ang=0, case='Axial')
+C_ang0_Flex = section_input(A=9.0, B=2.5, C=1.625, t=0.075, R=0.1870, ang=0, case='Flexural')
+C_ang90_Flex = section_input(A=9.0, B=2.5, C=1.625, t=0.075, R=0.1870, ang=90, case='Flexural')
+C_ang270_Flex = section_input(A=9.0, B=2.5, C=1.625, t=0.075, R=0.1870, ang=270, case='Flexural')
+# List for iteration for all the cases:
+Analysis_Cases = [C_Axial, C_ang0_Flex, C_ang90_Flex, C_ang270_Flex]
 
 
 # ======================================================================================================================
 # PERFORM THE FINITE STRIP ANALYSIS
 # ======================================================================================================================
-def C_sign_solver() -> Dict[str, np.ndarray]:
+def C_sign_solver(Section, Material, Member) -> Dict[str, np.ndarray]:
+    '''
+
+    :param Section: C_####['section']
+    :param Material: C_####['material']
+    :param Member: member
+    :return:
+    '''
     # Define an isotropic material with E = 29,500 ksi and nu = 0.3
-    E = defin.material.E
-    nu = defin.material.v
+    E = Material.E
+    nu = Material.v
     props = np.array([np.array([0, E, E, nu, nu, E / (2 * (1 + 0.3))])])
     # Steel yield stress
-    fy = defin.material.fy  # ksi
+    fy = Material.fy  # ksi
     # Nodes IDs for strips
-    nodes = defin.section.nodes
+    nodes = Section['section'].nodes
     # Elements IDs for strips
-    elements = defin.section.elements
+    elements = Section['section'].elements
     # Steel thickness
-    thickness = defin.section.t
+    thickness = Section['section'].t
     # Section name
-    descp = defin.section.descp_rep
+    descp = Section['section'].descp_rep
     # Analysis case
-    case = defin.case
+    case = Section['case']
     # Section orientation
-    angle = defin.section.angle
-    orientationShape = defin.section.ang_shape
+    angle = Section['section'].angle
+    orientationShape = Section['section'].ang_shape
     # Calculation the gross section properties
-    properties = defin.gross
+    properties = Section['gross']
 
     # These lengths will generally provide sufficient accuracy for
     # local, distortional, and global buckling modes
     # Length units are inches
-    ReferenceLength = defin.member.Lx  # inches
-    lengths = defin.member.lengths_data
+    ReferenceLength = Member.Lx  # inches
+    lengths = Member.lengths_data
 
     flag = np.array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     # No special springs or constraints
@@ -60,7 +177,7 @@ def C_sign_solver() -> Dict[str, np.ndarray]:
     }
 
     # Simply-supported boundary conditions
-    b_c = defin.member.support
+    b_c = Member.support
 
     # For signature curve analysis, only a single array of ones makes sense here
     m_all = np.ones((len(lengths), 1))
@@ -88,7 +205,7 @@ def C_sign_solver() -> Dict[str, np.ndarray]:
     }
 
     # Generate the stress points
-    if case.case == 'Axial':
+    if case == 'Axial':
         nodes_p = stress_gen(
             nodes=nodes,
             forces={
@@ -141,7 +258,6 @@ def C_sign_solver() -> Dict[str, np.ndarray]:
             curve[j, i, 0] = lengths[j]
             curve[j, i, 1] = curves[j, i]
 
-
     return {
         'curve': curve,
         'nodes': nodes,
@@ -186,7 +302,7 @@ def plot_Sign_Curve(Section, plot: bool):
     # Plotting
     fig, (ax1, ax2) = plt.subplots(1, 2)
     minimas = []
-    fig.suptitle(f'Signature Curve\n{case.case} case, {case.explanation}\nfy: {fy:.2f} ksi')
+    fig.suptitle(f'Signature Curve\n{case} case\nfy: {fy:.2f} ksi')
     # Finding the minima points
     for loadFactor in range(2, len(Y_Values)):
         if Y_Values[loadFactor - 1] < Y_Values[loadFactor - 2] and Y_Values[
@@ -327,44 +443,37 @@ def export_report(Section, minimas):
 
 
 # ======================================================================================================================
-# EXPLANATION OF INPUT TERMS
-# ======================================================================================================================
-# C_sign_solver(A, B, C, t, angle, Fyield, Case, MemLength)
-# Units [in, ksi]
-# A : Web height.
-# B : Flange width.
-# C : Lip length.
-# t : Steel thickness.
-# R : Inner radius.
-# angle : Orientation of the section.
-#                 "0": """
-#                        ┌-┐
-#                        |
-#                        └-┘
-#                        """,
-#                "270": """
-#                        ┌   ┐
-#                        └---┘
-#                        """,
-#                "90": """
-#                        ┌---┐
-#                        └   ┘
-#                        """
-# Fyield : Steel yield stress.
-# Case : 'Axial' for uniform axial compression.
-#           'Flexural' for bending creating compression at top fiber.
-# MemLength : Total member length
-# ======================================================================================================================
-
-
-# ======================================================================================================================
-# OUTPUT
+# OUTPUT FOR BUCKLING ANALYSIS
 # ======================================================================================================================
 # Creation of a member to solve
-C1 = C_sign_solver()
+C1 = C_sign_solver(C_Axial, material, member)
+C2 = C_sign_solver(C_ang0_Flex, material, member)
+C3 = C_sign_solver(C_ang90_Flex, material, member)
+C4 = C_sign_solver(C_ang270_Flex, material, member)
 # Creation of graph if True plot will be shown
 pC1 = plot_Sign_Curve(C1, True)
+pC2 = plot_Sign_Curve(C2, True)
+pC3 = plot_Sign_Curve(C3, True)
+pC4 = plot_Sign_Curve(C4, True)
 # Print minimas
 print(pC1)
+print(pC2)
+print(pC3)
+print(pC4)
 # Export the report. (Section definition, Curve)
 export_report(C1, pC1)
+export_report(C2, pC2)
+export_report(C3, pC3)
+export_report(C4, pC4)
+
+# ======================================================================================================================
+# OUTPUT FOR DIRECT STRENGTH METHOD IN AISI
+# ======================================================================================================================
+DSM1 = strength.stregnths(pC1, material, C_Axial, member)
+DSM2 = strength.stregnths(pC2, material, C_ang0_Flex, member)
+DSM3 = strength.stregnths(pC3, material, C_ang90_Flex, member)
+DSM4 = strength.stregnths(pC4, material, C_ang270_Flex, member)
+print(DSM1)
+print(DSM2)
+print(DSM3)
+print(DSM4)
