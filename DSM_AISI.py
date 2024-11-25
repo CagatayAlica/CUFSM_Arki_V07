@@ -16,8 +16,6 @@ import Constants.Constants as cons
 import AISI_Functions.DirectStrengthMethod as strength
 
 
-# import Definitions as defin
-
 # ======================================================================================================================
 # EXPLANATION OF INPUT TERMS
 # ======================================================================================================================
