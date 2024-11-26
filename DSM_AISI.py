@@ -116,14 +116,14 @@ def member_input(**kwargs):
 # ======================================================================================================================
 # Member
 # -------------------------------------------------------
-member = member_input(Lx=240.0, Ly=120.0, Lt=120.0, Kx=1.0, Ky=1.0, Kt=1.0, support='S-S')
+member = member_input(Lx=240.0, Ly=10.0, Lt=10.0, Kx=1.0, Ky=1.0, Kt=1.0, support='S-S')
 
 # Material
 # -------------------------------------------------------
 material = material_input(fy=55.0)
 
 # Sections
-# _______________________________________________________
+# -------------------------------------------------------
 Section_Shape = section_dimensions(A=9.0, B=2.5, C=0.773, t=0.059, R=0.1875)
 C_Axial = section_input(Section_Dimensions=Section_Shape, ang=0, case='Axial')
 C_ang0_Flex = section_input(Section_Dimensions=Section_Shape, ang=0, case='Flexural')

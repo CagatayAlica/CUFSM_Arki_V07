@@ -38,7 +38,6 @@ def stregnths(Minimas, Material, Section, Member):
     Critical_Length_Global = None
     ratio_Local = None
     ratio_Distortional = None
-    ratio_Global = None
 
     # check point for empty minimas list
     if not Minimas:
@@ -55,9 +54,6 @@ def stregnths(Minimas, Material, Section, Member):
         # There is no second minima. Therefore, distortional case is taken equal to local case.
         Critical_Length_Distortional = Minimas[0][0]
         ratio_Distortional = Minimas[0][2]
-        # Global buckling case.
-        Critical_Length_Global = Minimas[1][0]
-        ratio_Global = Minimas[1][2]
     if len(Minimas) > 2:
         # First minima for local buckling case.
         Critical_Length_Local = Minimas[0][0]
@@ -65,13 +61,10 @@ def stregnths(Minimas, Material, Section, Member):
         # Second minima for distortional buckling case.
         Critical_Length_Distortional = Minimas[1][0]
         ratio_Distortional = Minimas[1][2]
-        # Global buckling case.
-        Critical_Length_Global = Minimas[-1][0]
-        ratio_Global = Minimas[-1][2]
 
-    # ======================================================================================================================
+    # ==================================================================================================================
     # E. MEMBERS IN COMPRESSION
-    # ======================================================================================================================
+    # ==================================================================================================================
     def E21():
         # Fcre, flexural buckling stress.
         # Eq. E2.1-1
@@ -171,9 +164,9 @@ def stregnths(Minimas, Material, Section, Member):
         print(Rep)
         return Results
 
-    # ======================================================================================================================
+    # ==================================================================================================================
     # F. MEMBERS IN FLEXURE
-    # ======================================================================================================================
+    # ==================================================================================================================
     def F211():
         """
         AISI S100-16
@@ -330,7 +323,9 @@ def stregnths(Minimas, Material, Section, Member):
         print(Rep)
         return FlexuralStrength
 
-
+    # ==================================================================================================================
+    # OUTPUT
+    # ==================================================================================================================
     if Section['case'] == 'Axial':
         Pne = E2(E21(), E22())
         Pnl = E32(Pne, ratio_Local)
@@ -355,8 +350,6 @@ def stregnths(Minimas, Material, Section, Member):
         print(f'Strength_ASD = {Strength_ASD}')
         print(f'Strength_LRFD = {Strength_LRFD}')
 
-    Results = {'Strength_ASD':Strength_ASD,
+    Results = {'Strength_ASD': Strength_ASD,
                'Strength_LRFD': Strength_LRFD}
     return Results
-
-
