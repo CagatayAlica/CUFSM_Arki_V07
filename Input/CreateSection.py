@@ -258,6 +258,173 @@ class C_Section:
                               f'  └   ┘\n')
 
 
+class C_Section_SharpCorner:
+    def __init__(self, A: float, B: float, C: float, t: float, R: float, angle: Literal[0, 90, 270]):
+        self.A = A
+        self.B = B
+        self.C = C
+        self.t = t
+        self.R = R
+        self.angle = angle
+        self.aa = None
+        self.bb = None
+        self.cc = None
+        self.tcore = None
+        self.a = None
+        self.b = None
+        self.c = None
+        self.r = None
+        self.nodes = np.array([[]])
+        self.elements = None
+        self.descp_rep = None
+        self.descp_Plot = None
+        self.centerline()
+        self.coordinates()
+        self.ang_shape = None
+        self.orientation(self.angle)
+
+    def centerline(self):
+        self.r = self.R + self.t / 2.0
+        # Centerline dimensions
+        self.aa = self.A - self.t
+        self.bb = self.B - self.t
+        self.cc = self.C - self.t / 2.0
+        self.tcore = self.t - 0.04
+        # Flat portions
+        self.a = self.aa - 2 * self.r
+        self.b = self.bb - 2 * self.r
+        self.c = self.cc - self.r
+
+    def tranform(self, alfa, origin):
+        # Transformation matrix
+        p = origin
+        c, s = np.cos(math.radians(alfa)), np.sin(math.radians(alfa))
+        j = np.array([[c, s, 0],
+                      [-s, c, 0],
+                      [0, 0, 1]])
+        RotatedCorners = np.matmul(j, p)
+        return RotatedCorners.T
+
+    def coordinates(self):
+        # Bottom right
+        origin1 = np.array([self.bb - self.r, self.r, 0.0])
+        radius = np.array([0, self.r, 0.0])
+        start_ang = 90
+        p11 = self.tranform(start_ang + 10, radius)
+        p12 = self.tranform(start_ang + 20, radius)
+        p13 = self.tranform(start_ang + 30, radius)
+        p14 = self.tranform(start_ang + 40, radius)
+        p15 = self.tranform(start_ang + 50, radius)
+        p16 = self.tranform(start_ang + 60, radius)
+        p17 = self.tranform(start_ang + 70, radius)
+        p18 = self.tranform(start_ang + 80, radius)
+        # Bottom left
+        origin2 = np.array([self.r, self.r, 0.0])
+        start_ang = 180
+        p21 = self.tranform(start_ang + 10, radius)
+        p22 = self.tranform(start_ang + 20, radius)
+        p23 = self.tranform(start_ang + 30, radius)
+        p24 = self.tranform(start_ang + 40, radius)
+        p25 = self.tranform(start_ang + 50, radius)
+        p26 = self.tranform(start_ang + 60, radius)
+        p27 = self.tranform(start_ang + 70, radius)
+        p28 = self.tranform(start_ang + 80, radius)
+        # Top left
+        origin3 = np.array([self.r, self.aa - self.r, 0.0])
+        start_ang = 270
+        p31 = self.tranform(start_ang + 10, radius)
+        p32 = self.tranform(start_ang + 20, radius)
+        p33 = self.tranform(start_ang + 30, radius)
+        p34 = self.tranform(start_ang + 40, radius)
+        p35 = self.tranform(start_ang + 50, radius)
+        p36 = self.tranform(start_ang + 60, radius)
+        p37 = self.tranform(start_ang + 70, radius)
+        p38 = self.tranform(start_ang + 80, radius)
+        # Top right
+        origin4 = np.array([self.bb - self.r, self.aa - self.r, 0.0])
+        start_ang = 0
+        p41 = self.tranform(start_ang + 10, radius)
+        p42 = self.tranform(start_ang + 20, radius)
+        p43 = self.tranform(start_ang + 30, radius)
+        p44 = self.tranform(start_ang + 40, radius)
+        p45 = self.tranform(start_ang + 50, radius)
+        p46 = self.tranform(start_ang + 60, radius)
+        p47 = self.tranform(start_ang + 70, radius)
+        p48 = self.tranform(start_ang + 80, radius)
+
+        self.Csection = np.array([[self.bb, self.cc],
+                                  [self.bb, 0.0],
+                                  [self.bb / 2.0, 0.0],
+                                  [0.0, 0.0],
+                                  [0.0, self.aa * (1.0 / 4.0)],
+                                  [0.0, self.aa * (2.0 / 4.0)],
+                                  [0.0, self.aa * (3.0 / 4.0)],
+                                  [0.0, self.aa],
+                                  [self.bb / 2.0, self.aa],
+                                  [self.bb, self.aa],
+                                  [self.bb, self.aa - self.cc]])
+        # =================
+
+        # Function call for rotation
+        Csection, RotatedCsection = rotateCoordinates(self.Csection.T, self.angle)
+        # Create id numbers for each row
+        numbers = np.arange(RotatedCsection.shape[1], dtype=int)
+        # Adding id numbers to the coordinates matrix
+        CsectionWithNumbers = np.vstack([numbers, RotatedCsection])
+
+        # Creating ones
+        ones = np.ones((4, RotatedCsection.shape[1]))
+        # Adding one numbers to the coordinates matrix
+        CsectionWithNumbers = np.vstack([CsectionWithNumbers, ones])
+        # Creating zeros
+        zeros = np.zeros((RotatedCsection.shape[1]))
+        # Adding zeros to the coordinates matrix
+        CsectionWithNumbers = np.vstack([CsectionWithNumbers, zeros])
+
+        # ===================================
+        # Final nodes and elements for Opensees
+        # ===================================
+        self.nodes = CsectionWithNumbers.T
+        # If angle is 90, shift section as flange width in Y dir.
+        # If angle is 270, shift section as web height in X dir.
+        if self.angle == 90:
+            for i in self.nodes:
+                i[2] = i[2] + self.B
+        elif self.angle == 270:
+            for i in self.nodes:
+                i[1] = i[1] + self.A
+
+        # Shape of the node matrix
+        num_cols, num_rows = Csection.shape
+        self.elements = np.empty([num_rows - 1, 5])
+        for i in range(num_rows - 1):
+            self.elements[i, 0] = i
+            self.elements[i, 1] = i
+            self.elements[i, 2] = i + 1
+            self.elements[i, 3] = self.t
+            self.elements[i, 4] = 0
+
+        self.descp_Plot = f'Section :C {self.A:.3f} x {self.B:.3f} x {self.C:.3f} - {self.t:.3f}'
+        self.descp_rep = (f'Section :C {self.A:.3f} x {self.B:.3f} x {self.C:.3f} - {self.t:.3f}\n'
+                          f'   A:{self.A:.3f} in, Web height\n'
+                          f'   B:{self.B:.3f} in, Flange width\n'
+                          f'   C:{self.C:.3f} in, Lip length\n'
+                          f'   R:{self.R:.3f} in, Inner radius\n'
+                          f'   t:{self.t:.3f} in, Thickness')
+
+    def orientation(self, angle):
+        if angle == 0:
+            self.ang_shape = (f'      ┌-┐\n'
+                              f'        |\n'
+                              f'      └-┘\n')
+        elif angle == 270:
+            self.ang_shape = (f'   ┌   ┐\n'
+                              f'   └---┘\n')
+        else:
+            self.ang_shape = (f'  ┌---┐\n'
+                              f'  └   ┘\n')
+
+
 class U_Section:
     def __init__(self, A: float, B: float, t: float, R: float, angle: Literal[0, 90, 270]):
         self.Usection = None

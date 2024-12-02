@@ -5,10 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Cont. DSM...">
-      <change afterPath="$PROJECT_DIR$/lambdaDTest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AISI_Functions/CombinedForces.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AISI_Functions/CompressionBending.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AISI_Functions/DSM_AISI.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AISI_Functions/TensionShear.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" beforeDir="false" afterPath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DSM_AISI.py" beforeDir="false" afterPath="$PROJECT_DIR$/DSM_AISI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DSM_AISI.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Input/CreateSection.py" beforeDir="false" afterPath="$PROJECT_DIR$/Input/CreateSection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lambdaDTest.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,13 +64,14 @@
       <recent name="G:\My Drive\Py\CUFSM_Arki_V07\venv" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="H:\My Drive\Py\CUFSM_Arki_V07\AISI_Functions" />
       <recent name="H:\My Drive\Py\CUFSM_Arki_V07\pycufsm\examples" />
       <recent name="H:\My Drive\Py\CUFSM_Arki_V07\pycufsm\SectionProps" />
       <recent name="H:\My Drive\Py\CUFSM_Arki_V07\pycufsm\CUFSM_Functions" />
       <recent name="G:\My Drive\Py\CUFSM_Arki_V07" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.main">
     <configuration name="DirectStrengthMethod" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CUFSM_Arki_V07" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -86,8 +93,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CUFSM_Arki_V07" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.DirectStrengthMethod" />
         <item itemvalue="Python.DirectStrengthMethod" />
         <item itemvalue="Python.DirectStrengthMethod" />
@@ -295,7 +324,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732544833529</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Cont. DSM...">
+      <option name="closed" value="true" />
+      <created>1732608693207</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1732608693207</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

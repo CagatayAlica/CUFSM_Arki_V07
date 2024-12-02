@@ -70,6 +70,10 @@ def stregnths(Minimas, Material, Section, Member):
         # Eq. E2.1-1
         Fcre = min(math.pow(cons.PI, 2) * E / math.pow(Kx * Lx / rx, 2),
                    math.pow(cons.PI, 2) * E / math.pow(Ky * Ly / ry, 2))
+        Rep = (
+            f'{cons.secDivider}\n CALCULATION OF CRITICAL BUCKLING LOAD\n    CHAPTER E. MEMBERS IN COMPRESSION\n{cons.secDivider}\n'
+            f'The global elastic buckling stress.\nFcre: {Fcre:.3f} ksi. Eq.E2.1-1')
+        print(Rep)
         return Fcre
 
     def E22():
@@ -116,7 +120,7 @@ def stregnths(Minimas, Material, Section, Member):
                 f'Pcrl = {Pcrl:.3f} kips.\n')
         # Eq. E3.2.1-3
         laml = math.sqrt(Pne / Pcrl)
-        Rep += f'lamd = {laml:.3f} Eq.E3.2.1-3\n'
+        Rep += f'laml = {laml:.3f} Eq.E3.2.1-3\n'
         if laml <= 0.776:
             Pnl = Pne
             Rep += f'   laml <= 0.776\nPnl = {Pnl:.3f} kips. Eq.E3.2-1\n'
