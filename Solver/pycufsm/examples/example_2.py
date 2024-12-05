@@ -2,7 +2,7 @@ from typing import Dict, List
 
 import numpy as np
 
-from pycufsm.CUFSM_Functions.fsm import strip_new
+from Solver.pycufsm.CUFSM_Functions.fsm import strip_new
 from pycufsm.CUFSM_Functions.types import Analysis_Config, New_Element, Sect_Props
 
 # This example presents a very simple Cee section,

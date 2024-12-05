@@ -18,4 +18,4 @@ try:
 
 except ImportError:
     # if cython just fails entirely, then use the pure python module
-    import pycufsm.CUFSM_Functions.analysis_p as analysis  # pylint:disable=unused-import
+    import Solver.pycufsm.CUFSM_Functions.analysis_p as analysis  # pylint:disable=unused-import

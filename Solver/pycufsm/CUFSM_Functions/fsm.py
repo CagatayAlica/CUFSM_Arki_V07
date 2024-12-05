@@ -4,11 +4,11 @@ from typing import Dict, Literal, Optional, Sequence, Tuple, Union
 import numpy as np
 from scipy import linalg as spla  # type: ignore
 
-import pycufsm.CUFSM_Functions.cfsm
-from pycufsm.CUFSM_Functions.analysis import analysis
-from pycufsm.CUFSM_Functions.helpers import inputs_new_to_old, lengths_recommend
-from pycufsm.CUFSM_Functions.preprocess import stress_gen, yield_mp
-from pycufsm.CUFSM_Functions.types import (
+import Solver.pycufsm.CUFSM_Functions.cfsm
+from Solver.pycufsm.CUFSM_Functions.analysis import analysis
+from Solver.pycufsm.CUFSM_Functions.helpers import inputs_new_to_old, lengths_recommend
+from Solver.pycufsm.CUFSM_Functions.preprocess import stress_gen, yield_mp
+from Solver.pycufsm.CUFSM_Functions.types import (
     BC, Analysis_Config, ArrayLike, Cfsm_Config, Forces, GBT_Con, New_Constraint, New_Element,
     New_Node_Props, New_Spring, Sect_Props, Yield_Force
 )
@@ -725,7 +725,7 @@ def signature_ss(
     i_b_c: BC = 'S-S'
     i_m_all = np.ones((len(lengths), 1)).tolist()
 
-    isignature, icurve, ishapes = pycufsm.CUFSM_Functions.fsm.strip(
+    isignature, icurve, ishapes = Solver.pycufsm.CUFSM_Functions.fsm.strip(
         props=props,
         nodes=nodes,
         elements=elements,

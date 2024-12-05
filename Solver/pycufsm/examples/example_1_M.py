@@ -2,7 +2,7 @@ from typing import Dict
 
 import numpy as np
 
-from pycufsm.CUFSM_Functions.fsm import strip
+from Solver.pycufsm.CUFSM_Functions.fsm import strip
 from pycufsm.CUFSM_Functions.preprocess import stress_gen
 from pycufsm.CUFSM_Functions.types import BC, GBT_Con, Sect_Props
 from pycufsm.CUFSM_Functions.plotters import thecurve3

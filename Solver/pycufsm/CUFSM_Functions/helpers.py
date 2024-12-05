@@ -4,7 +4,7 @@ from typing import Dict, List, Literal, Optional, Sequence, Tuple, Union
 import numpy as np
 from scipy.io import loadmat  # type: ignore
 
-from pycufsm.CUFSM_Functions.types import (
+from Solver.pycufsm.CUFSM_Functions.types import (
     BC, Analysis_Config, ArrayLike, Cfsm_Config, Cufsm_MAT_File, GBT_Con, New_Constraint,
     New_Element, New_Node_Props, New_Props, New_Spring, PyCufsm_Input
 )
