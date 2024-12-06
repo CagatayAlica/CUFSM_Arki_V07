@@ -2,6 +2,9 @@ import math
 import Constants.Constants as cons
 import Input.Definitions as Inp
 import Solver.BucklingAnalysis as buckle
+import FirstGate as gate
+
+conv = gate.Unit_Definition
 
 
 class DSM_Strengths:
@@ -340,8 +343,9 @@ class DSM_Strengths:
             print(f'Pne = {Pne}')
             print(f'Pnl = {Pnl}')
             print(f'Pnd = {Pnd}')
-            Strength_ASD = min(min(Pnl['ASD']['oPne'], Pnl['ASD']['oPnl']), Pnd['ASD']['oPnd'])
-            Strength_LRFD = min(min(Pnl['LRFD']['ffPne'], Pnl['LRFD']['ffPnl']), Pnd['LRFD']['ffPnd'])
+            Strength_ASD = conv.convert_force(min(min(Pnl['ASD']['oPne'], Pnl['ASD']['oPnl']), Pnd['ASD']['oPnd']))
+            Strength_LRFD = conv.convert_force(
+                min(min(Pnl['LRFD']['ffPne'], Pnl['LRFD']['ffPnl']), Pnd['LRFD']['ffPnd']))
             print(f'Strength_ASD = {Strength_ASD}')
             print(f'Strength_LRFD = {Strength_LRFD}')
         else:
@@ -352,8 +356,9 @@ class DSM_Strengths:
 
             print(f'Mnl = {Mnl}')
             print(f'Mnd = {Mnd}')
-            Strength_ASD = min(min(Mnl['ASD']['oMne'], Mnl['ASD']['oMnl']), Mnd['ASD']['oMnd'])
-            Strength_LRFD = min(min(Mnl['LRFD']['ffMne'], Mnl['LRFD']['ffMnl']), Mnd['LRFD']['ffMnd'])
+            Strength_ASD = conv.convert_moment(min(min(Mnl['ASD']['oMne'], Mnl['ASD']['oMnl']), Mnd['ASD']['oMnd']))
+            Strength_LRFD = conv.convert_moment(
+                min(min(Mnl['LRFD']['ffMne'], Mnl['LRFD']['ffMnl']), Mnd['LRFD']['ffMnd']))
             print(f'Strength_ASD = {Strength_ASD}')
             print(f'Strength_LRFD = {Strength_LRFD}')
 
@@ -375,6 +380,7 @@ Curve_Flx_0 = [buckle.Signa_Flx_0.signaCurve_X, buckle.Signa_Flx_0.signaCurve_Y]
 Curve_Flx_90 = [buckle.Signa_Flx_90.signaCurve_X, buckle.Signa_Flx_90.signaCurve_Y]
 Curve_Flx_270 = [buckle.Signa_Flx_270.signaCurve_X, buckle.Signa_Flx_270.signaCurve_Y]
 
+
 class Tension:
     def __init__(self, Material, Gross):
         self.Ag = Gross.Ar
@@ -386,7 +392,8 @@ class Tension:
         Tn = self.Ag * self.fy
         Tno = Tn / self.omega
         ffTn = Tn * self.ff
-        Strength = {'Tn': Tn, 'Tno': Tno, 'ffTn': ffTn}
+        Strength = {'Tn': conv.convert_force(Tn), 'Tno': conv.convert_force(Tno),
+                    'ffTn': conv.convert_force(ffTn)}
         return Strength
 
 
@@ -423,7 +430,8 @@ class Shear:
             Vn = Vcr
         Vno = Vn / self.omega
         ffVn = Vn * self.ff
-        StrengthStrong = {'Vn': Vn, 'Vno': Vno, 'ffVn': ffVn}
+        StrengthStrong = {'Vn': conv.convert_force(Vn), 'Vno': conv.convert_force(Vno),
+                          'ffVn': conv.convert_force(ffVn)}
         return StrengthStrong
 
     def strengthWeak(self):
@@ -441,13 +449,16 @@ class Shear:
             Vn = 2 * Vcr
         Vno = Vn / self.omega
         ffVn = Vn * self.ff
-        StrengthWeak = {'Vn': Vn, 'Vno': Vno, 'ffVn': ffVn}
+        StrengthWeak = {'Vn': conv.convert_force(Vn), 'Vno': conv.convert_force(Vno),
+                        'ffVn': conv.convert_force(ffVn)}
         return StrengthWeak
 
 
 class Compression:
     def __init__(self, Material, Gross, Lx: float, Ly: float, Lt: float, Kx: float, Ky: float, Kt: float):
         # ==== Input ====
+        self.ffPn = None
+        self.Pno = None
         self.Pne = None
         self.Py = None
         self.Cb = 1.67
@@ -533,9 +544,10 @@ class Compression:
     def strength(self):
         self.Py = self.A * self.fy
         self.Pne = self.E2(self.E21(self.Lx, self.Ly), self.E22(self.Lx, self.Lt))
-        Pno = self.Pne / self.omega
-        ffPn = self.Pne * self.ff
-        Strength = {'Pne': self.Pne, 'Pno': Pno, 'ffPn': ffPn}
+        self.Pno = self.Pne / self.omega
+        self.ffPn = self.Pne * self.ff
+        Strength = {'Pne': conv.convert_force(self.Pne), 'Pno': conv.convert_force(self.Pno),
+                    'ffPn': conv.convert_force(self.ffPn)}
         return Strength
 
 
@@ -632,11 +644,21 @@ class Flexure:
     # ==================================================================================================================
     # OUTPUT
     # ==================================================================================================================
-    def strength(self):
+    def strengthStrong(self):
         self.My = self.Wxx * self.fy
         self.Fcre = self.F211(self.Ly, self.Lt)
         self.Mne = self.F21(self.Fcre)
         Mno = self.Mne / self.omega
         ffMn = self.Mne * self.ff
-        Strength = {'Mne': self.Mne, 'Mno': Mno, 'ffMn': ffMn}
+        Strength = {'Mne': conv.convert_moment(self.Mne), 'Mno': conv.convert_moment(Mno),
+                    'ffMn': conv.convert_moment(ffMn)}
+        return Strength
+
+    def strengthWeak(self):
+        self.My = self.Wyy * self.fy
+        self.Mne = self.My
+        Mno = self.Mne / self.omega
+        ffMn = self.Mne * self.ff
+        Strength = {'Mne': conv.convert_moment(self.Mne), 'Mno': conv.convert_moment(Mno),
+                    'ffMn': conv.convert_moment(ffMn)}
         return Strength

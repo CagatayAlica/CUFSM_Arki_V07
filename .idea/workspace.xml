@@ -5,44 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Cont. DSM...">
-      <change afterPath="$PROJECT_DIR$/AISI_Functions/Strengths.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Input/Definitions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Solver/BucklingAnalysis.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FirstGate.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AISI_Functions/DSM_AISI.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AISI_Functions/DirectStrengthMethod.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AISI_Functions/TensionShear.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Input/Material.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Input/Member.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AISI_Functions/Strengths.py" beforeDir="false" afterPath="$PROJECT_DIR$/AISI_Functions/Strengths.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Input/Definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Input/Definitions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/analysis_c.pyx" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/analysis_c.pyx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/analysis_p.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/analysis_p.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/cfsm.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/cfsm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/cutwp.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/cutwp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/fsm.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/fsm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/helpers.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/helpers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/plotters.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/plotters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/preprocess.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/preprocess.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/py.typed" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/py.typed" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/CUFSM_Functions/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/SectionProps/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/SectionProps/sectionDraw.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/SectionProps/sectionDraw.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/_version.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/_version.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/BucklingAnalysis_old1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/BucklingAnalysis_old1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/CheckSlope.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/CheckSlope.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/FindFlx.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/FindFlx.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/Input.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/Input.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/Rotate2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/Rotate2D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/Units.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/Units.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/SectionProps/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/example_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/example_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/example_1_M.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/example_1_M.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/example_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/example_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycufsm/examples/shapes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/examples/shapes.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -368,7 +335,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733149602126</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Cont. DSM...">
+      <option name="closed" value="true" />
+      <created>1733389191448</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1733389191448</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

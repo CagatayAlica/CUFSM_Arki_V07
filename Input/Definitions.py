@@ -1,4 +1,5 @@
 from typing import Literal
+import FirstGate as gate
 import numpy as np
 import Input.CreateSection as sec
 
@@ -63,7 +64,19 @@ class Case:
 
 
 # Main Input
-parameters = input_parameters(3.5, 1.625, 0.50, 0.0451, 0.0712, 50, 110, 50, 50, 1.0, 1.0, 1.0)
+Parameter = gate.Analysis_Section
+parameters = input_parameters(Parameter.A,
+                              Parameter.B,
+                              Parameter.C,
+                              Parameter.t,
+                              Parameter.R,
+                              Parameter.fy,
+                              Parameter.Lxg,
+                              Parameter.Lyg,
+                              Parameter.Ltg,
+                              Parameter.Kxg,
+                              Parameter.Kyg,
+                              Parameter.Ktg)
 A = parameters['A']
 B = parameters['B']
 C = parameters['C']
