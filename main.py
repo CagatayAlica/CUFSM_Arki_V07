@@ -16,6 +16,7 @@ def member_base_calculation():
     print(Strength.Str_Flx_90.Results)
     print(f'Bending About Weak Axis / Lips are under compression:')
     print(Strength.Str_Flx_270.Results)
+    print()
     Results = {'ASD': {'DSM_AxialCompression': Strength.Str_Axial_0.Results['Strength_ASD'],
                        'DSM_Flexure0': Strength.Str_Flx_0.Results['Strength_ASD'],
                        'DSM_Flexure90': Strength.Str_Flx_90.Results['Strength_ASD'],
@@ -89,30 +90,39 @@ def station_base_calculation(Lx: float, Ly: float, Lt: float, Kx: float, Ky: flo
 
 
 if __name__ == '__main__':
-    print(f'++++++++++\nCALCULATION, Unit [{gate.Unit_Definition.Unit}]\n++++++++++\n')
-    analysisMethod = gate.StrengthMethod
-    print(f'Method {analysisMethod}')
-    Parameter = gate.Analysis_Section
-    # This function will be called for members.
-    calc_1 = member_base_calculation()[1]
-    calc_2 = station_base_calculation(Parameter.Lxs,
-                                      Parameter.Lys,
-                                      Parameter.Lts,
-                                      Parameter.Kxs,
-                                      Parameter.Kys,
-                                      Parameter.Kts)
-    # Axial Compression Strength
-    Analysis_Results = {
-        'T_strength': calc_2[analysisMethod]['Global_AxialTension'],
-        'P_strength': min(calc_1[analysisMethod]['DSM_AxialCompression'],
-                          calc_2[analysisMethod]['Global_AxialCompression']),
-        'M_Strong_strength': min(calc_1[analysisMethod]['DSM_Flexure0'], calc_2[analysisMethod]['Global_Flexure0']),
-        'M_Weak_Lip_strength': min(calc_1[analysisMethod]['DSM_Flexure90'], calc_2[analysisMethod]['Global_Flexure90']),
-        'M_Weak_Web_strength': min(calc_1[analysisMethod]['DSM_Flexure270'],
-                                   calc_2[analysisMethod]['Global_Flexure270']),
-        'V_AlongWeb': calc_2[analysisMethod]['Global_ShearStrong'],
-        'V_AlongFlange': calc_2[analysisMethod]['Global_ShearWeak']}
-    print(f'Method {analysisMethod}')
-    for key, value in Analysis_Results.items():
-        print(f'{key}: {value:.4f}')
+    def run_general():
+        print(f'++++++++++\nCALCULATION, Unit [{gate.Unit_Definition.Unit}]\n++++++++++\n')
+        analysisMethod = gate.StrengthMethod
+        print(f'Method {analysisMethod}')
+        Parameter = gate.Analysis_Section
+        # This function will be called for members.
+        calc_member = member_base_calculation()
+        calc_1 = calc_member[1]
+        calc_2 = station_base_calculation(Parameter.Lxs,
+                                          Parameter.Lys,
+                                          Parameter.Lts,
+                                          Parameter.Kxs,
+                                          Parameter.Kys,
+                                          Parameter.Kts)
+        # Signature curves:
+        Signature_curves = calc_member[0]
+        # Analysis results:
+        Analysis_Results = {
+            'T_strength': calc_2[analysisMethod]['Global_AxialTension'],
+            'P_strength': min(calc_1[analysisMethod]['DSM_AxialCompression'],
+                              calc_2[analysisMethod]['Global_AxialCompression']),
+            'M_Strong_strength': min(calc_1[analysisMethod]['DSM_Flexure0'],
+                                     calc_2[analysisMethod]['Global_Flexure0']),
+            'M_Weak_Lip_strength': min(calc_1[analysisMethod]['DSM_Flexure90'],
+                                       calc_2[analysisMethod]['Global_Flexure90']),
+            'M_Weak_Web_strength': min(calc_1[analysisMethod]['DSM_Flexure270'],
+                                       calc_2[analysisMethod]['Global_Flexure270']),
+            'V_AlongWeb': calc_2[analysisMethod]['Global_ShearStrong'],
+            'V_AlongFlange': calc_2[analysisMethod]['Global_ShearWeak']}
+        print(f'Method {analysisMethod}')
+        for key, value in Analysis_Results.items():
+            print(f'{key}: {value:.4f}')
 
+        return Signature_curves, Analysis_Results
+
+    run_general()
