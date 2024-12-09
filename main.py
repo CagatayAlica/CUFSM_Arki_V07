@@ -1,6 +1,7 @@
 import Input.Definitions as Inp
 import AISI_Functions.Strengths as Strength
 import FirstGate as gate
+from AISI_Functions import CombinedForces as combined
 
 
 def member_base_calculation():
@@ -88,8 +89,17 @@ def station_base_calculation(Lx: float, Ly: float, Lt: float, Kx: float, Ky: flo
     return Results
 
 
+def design_loads(N, Mx, My, Vx, Vy):
+    loads = {'N': N,
+             'Mx': Mx,
+             'My': My,
+             'Vx': Vx,
+             'Vy': Vy}
+    return loads
+
+
 if __name__ == '__main__':
-    print(f'++++++++++\nCALCULATION, Unit [{gate.Unit_Definition.Unit}]\n++++++++++\n')
+    print(f'\n++++++++++\nCALCULATION, Unit [{gate.Unit_Definition.Unit}]\n++++++++++\n')
     analysisMethod = gate.StrengthMethod
     print(f'Method {analysisMethod}')
     Parameter = gate.Analysis_Section
@@ -116,3 +126,27 @@ if __name__ == '__main__':
     for key, value in Analysis_Results.items():
         print(f'{key}: {value:.4f}')
 
+    design_load_def = design_loads(-12.00, 0.23, 0.0, 0.0, 2.4)
+    # Grouping the loads
+    Mx = design_load_def['Mx']
+    My = design_load_def['My']
+    N = design_load_def['N']
+    Vx = design_load_def['Vx']
+    Vy = design_load_def['Vy']
+    Mxa = Analysis_Results['M_Strong_strength']
+    if My >= 0.0:
+        Mya = Analysis_Results['M_Weak_Lip_strength']
+    else:
+        Mya = Analysis_Results['M_Weak_Web_strength']
+    Ta = Analysis_Results['T_strength']
+    Pa = Analysis_Results['P_strength']
+    Vya = Analysis_Results['V_AlongWeb']
+    Vxa = Analysis_Results['V_AlongFlange']
+
+    ratio1 = combined.CombinedForces(Mx, My, N, Vx, Vy,
+                                     Mxa, Mya, Ta, Pa, Vxa, Vya)
+    if N >= 0.0:
+        print(ratio1.TensionBending())
+    else:
+        print(ratio1.CompressionBending())
+    print(ratio1.BendingShear())
