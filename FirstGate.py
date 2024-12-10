@@ -89,10 +89,10 @@ class Main_Input_Parameters:
 
 StrengthMethod = Analysis('LRFD').method()
 
-Unit_Definition = Base_Unit('Metric')
+Unit_Definition = Base_Unit('Imperial')
 
-Input = Main_Input_Parameters(3.5, 1.625, 0.50, 0.0451, 0.0712,
-                              50,
+Input = Main_Input_Parameters(2.5, 1.25, 0.188, 0.0451, 0.0712,
+                              33,
                               110, 50, 50, 1.0, 1.0, 1.0,
                               110, 50, 50, 1.0, 1.0, 1.0,
                               Unit_Definition)
@@ -103,4 +103,4 @@ Input_M = Main_Input_Parameters(120.0, 55.0, 15.0, 1.0, 2.5,
                                 2800.0, 1220.0, 1220.0, 1.0, 1.0, 1.0,
                                 Unit_Definition)
 
-Analysis_Section = Input_M
+Analysis_Section = Input

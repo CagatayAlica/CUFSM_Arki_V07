@@ -70,19 +70,19 @@ class BucklingAnalysis:
 
         # For signature curve analysis, only a single array of ones makes sense here
         m_all = np.ones((len(lengths), 1))
-
         # Solve for 10 eigenvalues
         n_eigs = 12
         # Set the section properties
         sect_props: Sect_Props = {
             'cx': properties.cx,
-            'cy': properties.cy,
+            'cy': properties.zgb,
             'x0': properties.xsc,
             'y0': properties.ysc,
             'phi': 0,
             'A': properties.Ar,
             'Ixx': properties.Ix,
             'Ixy': properties.Ixy,
+            'Wxx': properties.Wx,
             'Iyy': properties.Iy,
             'I11': properties.Ix,
             'I22': properties.Iy,
@@ -113,7 +113,7 @@ class BucklingAnalysis:
                 nodes=nodes,
                 forces={
                     'P': 0,  # fy * sect_props['A'],
-                    'Mxx': fy * sect_props['Ixx'] / sect_props['cy'],
+                    'Mxx': fy * sect_props['Wxx'],
                     'Myy': 0,
                     'M11': 0,
                     'M22': 0,

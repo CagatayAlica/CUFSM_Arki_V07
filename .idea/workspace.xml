@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Cont. DSM...">
+    <list default="true" id="7e51e282-bc6b-4f59-a3a1-f3614747de10" name="Changes" comment="Cont. Combined forces are implemented.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AISI_Functions/CombinedForces.py" beforeDir="false" afterPath="$PROJECT_DIR$/AISI_Functions/CombinedForces.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FirstGate.py" beforeDir="false" afterPath="$PROJECT_DIR$/FirstGate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/BucklingAnalysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/BucklingAnalysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/types.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/pycufsm/CUFSM_Functions/types.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,9 +23,22 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="Development_03" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Development_02" />
+        <entry key="$PROJECT_DIR$" value="Development_06" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -63,7 +77,8 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "Development__03",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "G:/My Drive/Py/CUFSM_Arki_V07/AISI_Functions/DirectStrengthMethod.py"
+    "last_opened_file_path": "G:/My Drive/Py/CUFSM_Arki_V07/AISI_Functions/DirectStrengthMethod.py",
+    "settings.editor.selected.configurable": "preferences.pathVariables"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -82,7 +97,6 @@
   <component name="RunManager" selected="Python.main">
     <configuration name="Strengths" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CUFSM_Arki_V07" />
-      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -104,7 +118,6 @@
     </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CUFSM_Arki_V07" />
-      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -129,8 +142,8 @@
         <item itemvalue="Python.main" />
         <item itemvalue="Python.Strengths" />
         <item itemvalue="Python.Strengths" />
-        <item itemvalue="Python.Strengths" />
-        <item itemvalue="Python.Strengths" />
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -358,7 +371,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733389191448</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Cont. Combined forces are implemented.">
+      <option name="closed" value="true" />
+      <created>1733744139650</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1733744139650</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -375,7 +396,8 @@
     <MESSAGE value="Direct Strength Method is implemented.&#10;It is returning ASD and LRFD strengths of the member." />
     <MESSAGE value="All files are re-arranged." />
     <MESSAGE value="Cont. DSM..." />
-    <option name="LAST_COMMIT_MESSAGE" value="Cont. DSM..." />
+    <MESSAGE value="Cont. Combined forces are implemented." />
+    <option name="LAST_COMMIT_MESSAGE" value="Cont. Combined forces are implemented." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

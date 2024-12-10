@@ -182,6 +182,7 @@ Sect_Props = TypedDict(
         "Ixx": float,
         "Iyy": float,
         "Ixy": float,
+        "Wxx": float,
         "phi": float,
         "I11": float,
         "I22": float,
